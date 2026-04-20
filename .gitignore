@@ -1,0 +1,89 @@
+# ============================================
+# NovaCareEMR monorepo .gitignore
+# ============================================
+
+# ---- Dependencies ----
+**/node_modules/
+**/.pnp
+**/.pnp.*
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/versions
+
+# ---- Next.js build output ----
+**/.next/
+**/out/
+**/build/
+**/dist/
+
+# ---- TypeScript ----
+**/*.tsbuildinfo
+**/next-env.d.ts
+
+# ---- Env & secrets ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# ---- Logs ----
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# ---- Testing / coverage ----
+**/coverage/
+**/.nyc_output/
+
+# ---- Deployment artifacts ----
+**/.vercel
+**/.turbo
+
+# ---- OS cruft ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Editor / IDE ----
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+*.swp
+*.swo
+
+# ---- Claude Code local state ----
+.claude/settings.local.json
+.claude/cache/
+.claude/sessions/
+
+# ---- Backup / archive ----
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*~
+*.bak
+
+# ---- Python (for potential SATUSEHAT gateway scripts) ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# ---- Database / local data ----
+*.sqlite
+*.sqlite3
+*.db
+data/
+uploads/
+tmp/

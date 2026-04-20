@@ -1,0 +1,48 @@
+{
+  "name": "NovaCareEMR · Salam AI",
+  "short_name": "NovaCareEMR",
+  "description": "Clinical Practice Operating System dari Salam AI — offline-first, SATUSEHAT-ready, human-in-the-loop.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0a0a0a",
+  "categories": ["medical", "productivity", "health"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pasien Baru",
+      "short_name": "Baru",
+      "url": "/pasien/baru",
+      "description": "Daftarkan pasien baru"
+    },
+    {
+      "name": "Cari Pasien",
+      "short_name": "Cari",
+      "url": "/pasien",
+      "description": "Cari pasien"
+    },
+    {
+      "name": "Daftar Hari Ini",
+      "short_name": "Hari Ini",
+      "url": "/jadwal",
+      "description": "Antrian & jadwal hari ini"
+    }
+  ]
+}
