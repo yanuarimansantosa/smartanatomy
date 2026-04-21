@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { DarkToggle } from "@/components/dark-toggle";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
 
 function jamWIB(): number {
@@ -46,6 +47,7 @@ export default function Home() {
         <BrandHeader today={today} />
         <div className="flex shrink-0 items-center gap-2">
           <NoLlmBadge />
+          <DarkToggle />
           <ThemeSwitcher />
           <NetworkStatus />
         </div>

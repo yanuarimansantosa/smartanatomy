@@ -84,11 +84,11 @@ export default function RootLayout({
     >
       <head>
         <script
-          // Apply saved theme BEFORE first paint to avoid flash.
-          // Filters out ANY existing theme-* class so new palettes work without
+          // Apply saved theme + dark-mode BEFORE first paint to avoid flash.
+          // Filters out ANY existing theme-*/dark class so new palettes work without
           // needing to update this list.
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'internasional';var r=document.documentElement;var c=(r.className||'').split(/\\s+/).filter(function(x){return x&&x.indexOf('theme-')!==0;});c.push('theme-'+t);r.className=c.join(' ');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'internasional';var d=localStorage.getItem('salamai.darkmode')==='1';var r=document.documentElement;var c=(r.className||'').split(/\\s+/).filter(function(x){return x&&x.indexOf('theme-')!==0&&x!=='dark';});c.push('theme-'+t);if(d)c.push('dark');r.className=c.join(' ');}catch(e){}})();`,
           }}
         />
       </head>

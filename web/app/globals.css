@@ -97,6 +97,43 @@
   --font-display: var(--font-playfair);
 }
 
+/* INTERNASIONAL · Dark mode — deep teal-ink + warm cream foreground.
+   Brand-DNA preserved: deep teal lifted to readable contrast (#3FAAA6),
+   gold accent slightly brightened (#D4A74F), background goes to teal-ink. */
+.theme-internasional.dark {
+  --background: #0D1A1A;
+  --foreground: #EEE9DD;
+  --card: #132626;
+  --card-foreground: #EEE9DD;
+  --popover: #132626;
+  --popover-foreground: #EEE9DD;
+  --primary: #3FAAA6;
+  --primary-foreground: #0A1F1F;
+  --secondary: #152B2B;
+  --secondary-foreground: #EEE9DD;
+  --muted: #0F2121;
+  --muted-foreground: #9DA59D;
+  --accent: #D4A74F;
+  --accent-foreground: #0A1F1F;
+  --destructive: #E06A5C;
+  --border: #1F3333;
+  --input: #1F3333;
+  --ring: #3FAAA6;
+  --chart-1: #3FAAA6;
+  --chart-2: #6BC8C4;
+  --chart-3: #D4A74F;
+  --chart-4: #8AB0A0;
+  --chart-5: #D8D2C5;
+  --sidebar: #132626;
+  --sidebar-foreground: #EEE9DD;
+  --sidebar-primary: #3FAAA6;
+  --sidebar-primary-foreground: #0A1F1F;
+  --sidebar-accent: #152B2B;
+  --sidebar-accent-foreground: #EEE9DD;
+  --sidebar-border: #1F3333;
+  --sidebar-ring: #3FAAA6;
+}
+
 .theme-teduh {
   /* TEDUH — Clinical Calm. Teal primary, warm earth accent. */
   --background: #FAFAF7;
