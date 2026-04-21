@@ -13,6 +13,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { DarkToggle } from "@/components/dark-toggle";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
 import { AppOnboarding } from "@/components/app-onboarding";
+import { doaHariIni } from "@/lib/doa-templates";
 
 function jamWIB(): number {
   const s = new Intl.DateTimeFormat("id-ID", {
@@ -25,10 +26,10 @@ function jamWIB(): number {
 }
 
 function salamWaktu(h: number): string {
-  if (h < 11) return "Salam pagi";
-  if (h < 15) return "Salam siang";
-  if (h < 18) return "Salam sore";
-  return "Salam malam";
+  if (h < 11) return "Selamat pagi";
+  if (h < 15) return "Selamat siang";
+  if (h < 18) return "Selamat sore";
+  return "Selamat malam";
 }
 
 export default function Home() {
@@ -41,6 +42,7 @@ export default function Home() {
     timeZone: "Asia/Jakarta",
   }).format(now);
   const salam = salamWaktu(jamWIB());
+  const doa = doaHariIni(now);
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
@@ -70,6 +72,10 @@ export default function Home() {
               {salam},{" "}
               <span className="italic font-normal text-primary">Dokter.</span>
             </h1>
+
+            <p className="mt-4 max-w-xl text-[15px] italic leading-relaxed text-accent md:text-base">
+              {doa}
+            </p>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
               Siap memulai sesi konsultasi. Kami menyiapkan yang relevan dengan
