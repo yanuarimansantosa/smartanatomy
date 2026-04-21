@@ -2,8 +2,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Mail, MapPin, Phone, User } from "lucide-react";
 import { fmtTanggal, getPatientById, umurDariTglLahir } from "@/lib/patients";
+import { NetworkStatus } from "@/components/network-status";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { DarkToggle } from "@/components/dark-toggle";
+import { BrandHeader, BrandFooter } from "@/components/brand-header";
 
 export const dynamic = "force-dynamic";
+
+const today = new Intl.DateTimeFormat("id-ID", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Asia/Jakarta",
+}).format(new Date());
 
 export async function generateMetadata({
   params,
@@ -24,93 +36,143 @@ export default async function PasienDetailPage({
   const p = await getPatientById(id);
   if (!p) notFound();
 
+  const isL = p.jk === "L";
+
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center gap-3 border-b px-4 py-3 md:px-10 md:py-4">
-        <Link
-          href="/pasien"
-          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted/70"
-          aria-label="Kembali"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">
-            {p.nama}
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            <span className="font-mono">{p.noRm}</span> ·{" "}
-            {p.jk === "L" ? "Laki-laki" : "Perempuan"} · {umurDariTglLahir(p.tglLahir)}
-          </p>
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/60 px-6 py-3 md:px-10">
+        <BrandHeader today={today} />
+        <div className="flex shrink-0 items-center gap-2">
+          <DarkToggle />
+          <ThemeSwitcher />
+          <NetworkStatus />
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-6 md:px-10">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <section className="rounded-xl border bg-card p-5 md:col-span-2">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Identitas
-            </h2>
-            <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-              <Item icon={<User className="h-3.5 w-3.5" />} label="Nama" value={p.nama} />
-              <Item
-                icon={<Calendar className="h-3.5 w-3.5" />}
-                label="Tanggal lahir"
-                value={`${fmtTanggal(p.tglLahir)} (${umurDariTglLahir(p.tglLahir)})`}
-              />
-              <Item label="Jenis kelamin" value={p.jk === "L" ? "Laki-laki" : "Perempuan"} />
-              <Item label="No. RM" value={p.noRm} mono />
-              <Item label="NIK" value={p.nik ?? "—"} mono />
-            </dl>
+      <main className="flex-1 px-6 py-10 md:px-10 md:py-14">
+        <div className="mx-auto max-w-5xl">
+          <Link
+            href="/pasien"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Kembali ke daftar pasien
+          </Link>
+
+          {/* ---------- Hero ---------- */}
+          <section className="mt-10">
+            <p className="mb-5 inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.22em] text-accent">
+              <span aria-hidden className="inline-block h-px w-8 bg-accent/60" />
+              <span>Rekam pasien</span>
+            </p>
+
+            <h1 className="font-display text-4xl font-medium leading-[1.05] tracking-tight text-foreground md:text-5xl">
+              {p.nama}
+              <span className="italic font-normal text-primary">.</span>
+            </h1>
+
+            <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+              <span className="font-mono tabular-nums text-foreground/70">
+                {p.noRm}
+              </span>
+              <span aria-hidden className="text-muted-foreground/40">·</span>
+              <span>{isL ? "Laki-laki" : "Perempuan"}</span>
+              <span aria-hidden className="text-muted-foreground/40">·</span>
+              <span>{umurDariTglLahir(p.tglLahir)}</span>
+              <span aria-hidden className="text-muted-foreground/40">·</span>
+              <span>{fmtTanggal(p.tglLahir)}</span>
+            </p>
           </section>
 
-          <section className="rounded-xl border bg-card p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Kontak
-            </h2>
-            <dl className="space-y-3">
-              <Item
-                icon={<Phone className="h-3.5 w-3.5" />}
-                label="Telepon"
-                value={p.telepon ?? "—"}
-              />
-              <Item
-                icon={<Mail className="h-3.5 w-3.5" />}
-                label="Email"
-                value={p.email ?? "—"}
-              />
-              <Item
-                icon={<MapPin className="h-3.5 w-3.5" />}
-                label="Alamat"
-                value={p.alamat ?? "—"}
-              />
-            </dl>
-          </section>
-
-          {p.catatan ? (
-            <section className="rounded-xl border bg-card p-5 md:col-span-3">
-              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Catatan klinis
+          {/* ---------- Identitas + Kontak ---------- */}
+          <section className="mt-10 grid grid-cols-1 gap-4 border-t border-border/60 pt-8 md:grid-cols-3">
+            <div className="rounded-2xl border border-border bg-card p-6 md:col-span-2">
+              <h2 className="mb-5 font-display text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                Identitas
               </h2>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                {p.catatan}
-              </p>
+              <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                <Item
+                  icon={<User className="h-3.5 w-3.5" />}
+                  label="Nama"
+                  value={p.nama}
+                />
+                <Item
+                  icon={<Calendar className="h-3.5 w-3.5" />}
+                  label="Tanggal lahir"
+                  value={`${fmtTanggal(p.tglLahir)} (${umurDariTglLahir(p.tglLahir)})`}
+                />
+                <Item
+                  label="Jenis kelamin"
+                  value={isL ? "Laki-laki" : "Perempuan"}
+                />
+                <Item label="No. RM" value={p.noRm} mono />
+                <Item label="NIK" value={p.nik ?? "—"} mono />
+              </dl>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <h2 className="mb-5 font-display text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                Kontak
+              </h2>
+              <dl className="space-y-4">
+                <Item
+                  icon={<Phone className="h-3.5 w-3.5" />}
+                  label="Telepon"
+                  value={p.telepon ?? "—"}
+                />
+                <Item
+                  icon={<Mail className="h-3.5 w-3.5" />}
+                  label="Email"
+                  value={p.email ?? "—"}
+                />
+                <Item
+                  icon={<MapPin className="h-3.5 w-3.5" />}
+                  label="Alamat"
+                  value={p.alamat ?? "—"}
+                />
+              </dl>
+            </div>
+          </section>
+
+          {/* ---------- Catatan klinis ---------- */}
+          {p.catatan ? (
+            <section className="mt-4">
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <h2 className="mb-3 font-display text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                  Catatan klinis
+                </h2>
+                <p className="whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
+                  {p.catatan}
+                </p>
+              </div>
             </section>
           ) : null}
 
-          <section className="rounded-xl border border-dashed bg-muted/20 p-5 md:col-span-3">
-            <h2 className="mb-1 text-sm font-semibold">Riwayat kunjungan</h2>
-            <p className="text-xs text-muted-foreground">
-              Modul sesi konsultasi & rekam medis akan ditambahkan di iterasi berikutnya
-              (ICD-10, vital signs, resep, surat rujukan).
-            </p>
+          {/* ---------- Riwayat kunjungan (placeholder) ---------- */}
+          <section className="mt-4">
+            <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-8">
+              <p className="font-display text-lg font-medium tracking-tight text-foreground">
+                Riwayat kunjungan
+              </p>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                Modul sesi konsultasi & rekam medis akan ditambahkan di iterasi
+                berikutnya — alur 7 langkah, ICD-10, vital signs, resep, dan
+                surat rujukan.
+              </p>
+            </div>
           </section>
-        </div>
 
-        <p className="mt-6 text-right text-[11px] text-muted-foreground">
-          Dibuat {new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(p.createdAt)}
-        </p>
+          <p className="mt-8 text-right text-[11px] text-muted-foreground">
+            Dibuat{" "}
+            {new Intl.DateTimeFormat("id-ID", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(p.createdAt)}
+          </p>
+        </div>
       </main>
+
+      <BrandFooter />
     </div>
   );
 }
@@ -128,11 +190,15 @@ function Item({
 }) {
   return (
     <div>
-      <dt className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">
+      <dt className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
         {icon ? <span>{icon}</span> : null}
         <span>{label}</span>
       </dt>
-      <dd className={`mt-0.5 text-sm ${mono ? "font-mono" : ""}`}>{value}</dd>
+      <dd
+        className={`mt-1.5 text-base text-foreground ${mono ? "font-mono tabular-nums" : ""}`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
