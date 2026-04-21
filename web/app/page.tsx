@@ -51,7 +51,7 @@ export default function Home() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8 md:px-10">
         <section className="mb-10">
           <h2 className="mb-2 text-2xl font-semibold tracking-tight md:text-3xl">
-            Halo, Dokter.
+            Hai, Dokter.
           </h2>
           <p className="text-base text-muted-foreground md:text-lg">
             Pilih aksi cepat untuk memulai sesi konsultasi.

@@ -163,6 +163,374 @@
   --sidebar-ring: #3D2A5C;
 }
 
+/* ==========================================================================
+   Lanungga Studio · Design Languages (Pro tier, 10 palettes)
+   Color-only feel extraction. Each DL captures the color personality of its
+   inspiration source (hue family, saturation, surface temperature, accent
+   vibrancy). Typography/density/motion tokens deliberately kept as-is —
+   upgrade to full design-language architecture planned in Phase 2.
+   ========================================================================== */
+
+/* 1. ClearCare — Apple + Medical UX · Clean · Premium · Trust */
+.theme-clearcare {
+  --background: #F5F5F7;
+  --foreground: #1D1D1F;
+  --card: #FFFFFF;
+  --card-foreground: #1D1D1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #1D1D1F;
+  --primary: #0A84FF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E5F2FF;
+  --secondary-foreground: #0A84FF;
+  --muted: #F2F2F4;
+  --muted-foreground: #6E6E73;
+  --accent: #5AC8FA;
+  --accent-foreground: #003E73;
+  --destructive: #FF3B30;
+  --border: #D2D2D7;
+  --input: #D2D2D7;
+  --ring: #0A84FF;
+  --chart-1: #0A84FF;
+  --chart-2: #5AC8FA;
+  --chart-3: #32D74B;
+  --chart-4: #FF9F0A;
+  --chart-5: #BF5AF2;
+  --radius: 1rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1D1D1F;
+  --sidebar-primary: #0A84FF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E5F2FF;
+  --sidebar-accent-foreground: #0A84FF;
+  --sidebar-border: #D2D2D7;
+  --sidebar-ring: #0A84FF;
+}
+
+/* 2. FriendlyCare — Airbnb + Material · Warm · Welcoming */
+.theme-friendlycare {
+  --background: #FFFBF7;
+  --foreground: #484848;
+  --card: #FFFFFF;
+  --card-foreground: #484848;
+  --popover: #FFFFFF;
+  --popover-foreground: #484848;
+  --primary: #FF5A5F;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFE8E9;
+  --secondary-foreground: #C6373C;
+  --muted: #F7F3EC;
+  --muted-foreground: #8E8072;
+  --accent: #FFB400;
+  --accent-foreground: #4A3500;
+  --destructive: #D93025;
+  --border: #EAE1D3;
+  --input: #EAE1D3;
+  --ring: #FF5A5F;
+  --chart-1: #FF5A5F;
+  --chart-2: #FFB400;
+  --chart-3: #00A699;
+  --chart-4: #FC642D;
+  --chart-5: #484848;
+  --radius: 0.875rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #484848;
+  --sidebar-primary: #FF5A5F;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FFE8E9;
+  --sidebar-accent-foreground: #C6373C;
+  --sidebar-border: #EAE1D3;
+  --sidebar-ring: #FF5A5F;
+}
+
+/* 3. SmartClinic — Google Material · Modern · Modular */
+.theme-smartclinic {
+  --background: #F8F9FA;
+  --foreground: #202124;
+  --card: #FFFFFF;
+  --card-foreground: #202124;
+  --popover: #FFFFFF;
+  --popover-foreground: #202124;
+  --primary: #1A73E8;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8F0FE;
+  --secondary-foreground: #1A73E8;
+  --muted: #F1F3F4;
+  --muted-foreground: #5F6368;
+  --accent: #34A853;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EA4335;
+  --border: #DADCE0;
+  --input: #DADCE0;
+  --ring: #1A73E8;
+  --chart-1: #1A73E8;
+  --chart-2: #34A853;
+  --chart-3: #FBBC04;
+  --chart-4: #EA4335;
+  --chart-5: #9334E8;
+  --radius: 0.5rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #202124;
+  --sidebar-primary: #1A73E8;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E8F0FE;
+  --sidebar-accent-foreground: #1A73E8;
+  --sidebar-border: #DADCE0;
+  --sidebar-ring: #1A73E8;
+}
+
+/* 4. ProHealth — Microsoft Fluent · Professional · Disciplined */
+.theme-prohealth {
+  --background: #F3F2F1;
+  --foreground: #201F1E;
+  --card: #FAFAFA;
+  --card-foreground: #201F1E;
+  --popover: #FAFAFA;
+  --popover-foreground: #201F1E;
+  --primary: #0078D4;
+  --primary-foreground: #FFFFFF;
+  --secondary: #DEECF9;
+  --secondary-foreground: #005A9E;
+  --muted: #EDEBE9;
+  --muted-foreground: #605E5C;
+  --accent: #2B88D8;
+  --accent-foreground: #FFFFFF;
+  --destructive: #A4262C;
+  --border: #C8C6C4;
+  --input: #C8C6C4;
+  --ring: #0078D4;
+  --chart-1: #0078D4;
+  --chart-2: #2B88D8;
+  --chart-3: #107C10;
+  --chart-4: #FFB900;
+  --chart-5: #881798;
+  --radius: 0.25rem;
+  --sidebar: #FAFAFA;
+  --sidebar-foreground: #201F1E;
+  --sidebar-primary: #0078D4;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #DEECF9;
+  --sidebar-accent-foreground: #005A9E;
+  --sidebar-border: #C8C6C4;
+  --sidebar-ring: #0078D4;
+}
+
+/* 5. CriticalCare — IBM Carbon · Dark · Dense · Data-first */
+.theme-criticalcare {
+  --background: #0B0B0B;
+  --foreground: #F4F4F4;
+  --card: #161616;
+  --card-foreground: #F4F4F4;
+  --popover: #161616;
+  --popover-foreground: #F4F4F4;
+  --primary: #0F62FE;
+  --primary-foreground: #FFFFFF;
+  --secondary: #262626;
+  --secondary-foreground: #F4F4F4;
+  --muted: #262626;
+  --muted-foreground: #A8A8A8;
+  --accent: #FA4D56;
+  --accent-foreground: #FFFFFF;
+  --destructive: #DA1E28;
+  --border: #393939;
+  --input: #393939;
+  --ring: #0F62FE;
+  --chart-1: #0F62FE;
+  --chart-2: #08BDBA;
+  --chart-3: #EE538B;
+  --chart-4: #A56EFF;
+  --chart-5: #FA4D56;
+  --radius: 0.125rem;
+  --sidebar: #161616;
+  --sidebar-foreground: #F4F4F4;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #F4F4F4;
+  --sidebar-border: #393939;
+  --sidebar-ring: #0F62FE;
+}
+
+/* 6. QuickAction — Amazon · Urgent · Action · Commerce */
+.theme-quickaction {
+  --background: #FAFAFA;
+  --foreground: #0F1111;
+  --card: #FFFFFF;
+  --card-foreground: #0F1111;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1111;
+  --primary: #FF9900;
+  --primary-foreground: #0F1111;
+  --secondary: #FFF4E5;
+  --secondary-foreground: #B06500;
+  --muted: #F3F3F3;
+  --muted-foreground: #565959;
+  --accent: #232F3E;
+  --accent-foreground: #FFFFFF;
+  --destructive: #B12704;
+  --border: #D5D9D9;
+  --input: #D5D9D9;
+  --ring: #FF9900;
+  --chart-1: #FF9900;
+  --chart-2: #232F3E;
+  --chart-3: #007185;
+  --chart-4: #B12704;
+  --chart-5: #FFD814;
+  --radius: 0.25rem;
+  --sidebar: #232F3E;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #FF9900;
+  --sidebar-primary-foreground: #0F1111;
+  --sidebar-accent: #37475A;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #37475A;
+  --sidebar-ring: #FF9900;
+}
+
+/* 7. EduCare — Material + Spotify · Vibrant · Learning */
+.theme-educare {
+  --background: #FBF9FF;
+  --foreground: #1A1A2E;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A2E;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A2E;
+  --primary: #6C4BB4;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EDE5FB;
+  --secondary-foreground: #4A2F85;
+  --muted: #F2EEFC;
+  --muted-foreground: #6E6585;
+  --accent: #A7E34B;
+  --accent-foreground: #2C4A0A;
+  --destructive: #D9304F;
+  --border: #E0D5F0;
+  --input: #E0D5F0;
+  --ring: #6C4BB4;
+  --chart-1: #6C4BB4;
+  --chart-2: #A7E34B;
+  --chart-3: #FF5ECD;
+  --chart-4: #40C4FF;
+  --chart-5: #FFD93D;
+  --radius: 1rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1A2E;
+  --sidebar-primary: #6C4BB4;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EDE5FB;
+  --sidebar-accent-foreground: #4A2F85;
+  --sidebar-border: #E0D5F0;
+  --sidebar-ring: #6C4BB4;
+}
+
+/* 8. FormCare — Ant Design · Efficient · Data-entry */
+.theme-formcare {
+  --background: #F5F5F5;
+  --foreground: #1F1F1F;
+  --card: #FFFFFF;
+  --card-foreground: #1F1F1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F1F1F;
+  --primary: #1677FF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E6F4FF;
+  --secondary-foreground: #0958D9;
+  --muted: #F0F0F0;
+  --muted-foreground: #8C8C8C;
+  --accent: #52C41A;
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF4D4F;
+  --border: #D9D9D9;
+  --input: #D9D9D9;
+  --ring: #1677FF;
+  --chart-1: #1677FF;
+  --chart-2: #52C41A;
+  --chart-3: #FAAD14;
+  --chart-4: #FF4D4F;
+  --chart-5: #722ED1;
+  --radius: 0.375rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1F1F1F;
+  --sidebar-primary: #1677FF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E6F4FF;
+  --sidebar-accent-foreground: #0958D9;
+  --sidebar-border: #D9D9D9;
+  --sidebar-ring: #1677FF;
+}
+
+/* 9. InsightCare — Carbon + Fluent · Dark · Analytical · Dashboard */
+.theme-insightcare {
+  --background: #020617;
+  --foreground: #F8FAFC;
+  --card: #0F172A;
+  --card-foreground: #F8FAFC;
+  --popover: #0F172A;
+  --popover-foreground: #F8FAFC;
+  --primary: #0E7490;
+  --primary-foreground: #ECFEFF;
+  --secondary: #1E293B;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #F59E0B;
+  --accent-foreground: #422006;
+  --destructive: #EF4444;
+  --border: #334155;
+  --input: #334155;
+  --ring: #06B6D4;
+  --chart-1: #06B6D4;
+  --chart-2: #F59E0B;
+  --chart-3: #8B5CF6;
+  --chart-4: #F43F5E;
+  --chart-5: #10B981;
+  --radius: 0.375rem;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #06B6D4;
+  --sidebar-primary-foreground: #042F2E;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #334155;
+  --sidebar-ring: #06B6D4;
+}
+
+/* 10. LifeCare — Spotify + Airbnb · Dark · Lifestyle · Engagement */
+.theme-lifecare {
+  --background: #121212;
+  --foreground: #FFFFFF;
+  --card: #1E1E1E;
+  --card-foreground: #FFFFFF;
+  --popover: #1E1E1E;
+  --popover-foreground: #FFFFFF;
+  --primary: #1DB954;
+  --primary-foreground: #0A1F0F;
+  --secondary: #282828;
+  --secondary-foreground: #FFFFFF;
+  --muted: #282828;
+  --muted-foreground: #B3B3B3;
+  --accent: #FF6B6B;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E22134;
+  --border: #2A2A2A;
+  --input: #2A2A2A;
+  --ring: #1DB954;
+  --chart-1: #1DB954;
+  --chart-2: #FF6B6B;
+  --chart-3: #4ECDC4;
+  --chart-4: #C77DFF;
+  --chart-5: #FFD166;
+  --radius: 1.25rem;
+  --sidebar: #000000;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #1DB954;
+  --sidebar-primary-foreground: #0A1F0F;
+  --sidebar-accent: #282828;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #2A2A2A;
+  --sidebar-ring: #1DB954;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

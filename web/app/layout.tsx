@@ -71,9 +71,11 @@ export default function RootLayout({
     >
       <head>
         <script
-          // Apply saved theme BEFORE first paint to avoid flash
+          // Apply saved theme BEFORE first paint to avoid flash.
+          // Filters out ANY existing theme-* class so new palettes work without
+          // needing to update this list.
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'teduh';var r=document.documentElement;r.classList.remove('theme-teduh','theme-hangat','theme-selaras');r.classList.add('theme-'+t);}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'teduh';var r=document.documentElement;var c=(r.className||'').split(/\\s+/).filter(function(x){return x&&x.indexOf('theme-')!==0;});c.push('theme-'+t);r.className=c.join(' ');}catch(e){}})();`,
           }}
         />
       </head>
