@@ -4,12 +4,12 @@ import {
   UserPlus,
   Search,
   CalendarDays,
-  Stethoscope,
   ClipboardList,
   Settings,
 } from "lucide-react";
 import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { BrandHeader, BrandFooter } from "@/components/brand-header";
 
 export default function Home() {
   const today = new Intl.DateTimeFormat("id-ID", {
@@ -21,28 +21,9 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center justify-between border-b px-6 py-4 md:px-10">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <Stethoscope className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-tight md:text-2xl">
-                NovaCareEMR
-              </h1>
-              <span
-                className="inline-flex items-center gap-1 rounded-full border bg-muted/60 px-2 py-0.5 text-xs font-medium text-muted-foreground"
-                title="Powered by Salam AI"
-              >
-                <span lang="ar" className="text-sm leading-none">سلام</span>
-                <span>Salam AI</span>
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground">{today}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
+      <header className="flex items-center justify-between gap-3 border-b px-6 py-4 md:px-10">
+        <BrandHeader today={today} />
+        <div className="flex shrink-0 items-center gap-2">
           <ThemeSwitcher />
           <NetworkStatus />
         </div>
@@ -101,20 +82,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="border-t px-6 py-6 md:px-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 text-center">
-          <p className="text-sm font-medium">
-            <span lang="ar" className="mr-2">سلام</span>
-            NovaCareEMR · powered by Salam AI
-          </p>
-          <p className="text-xs italic text-muted-foreground">
-            Teknologi yang Membawa Kesejahteraan Berkeadilan
-          </p>
-          <p className="text-[11px] text-muted-foreground">
-            PWA · Offline-first · SATUSEHAT-ready · Human-in-the-loop · No LLM
-          </p>
-        </div>
-      </footer>
+      <BrandFooter />
     </div>
   );
 }
