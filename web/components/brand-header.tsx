@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   useEffect,
   useRef,
@@ -390,8 +391,23 @@ export function BrandFooter() {
         <p className="text-[11px] text-muted-foreground">
           PWA · Offline-first · SATUSEHAT-ready · Human-in-the-loop · No LLM
         </p>
+        <FooterNav />
       </div>
     </footer>
+  );
+}
+
+function FooterNav() {
+  return (
+    <nav className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
+      <Link href="/tentang" className="transition-colors hover:text-foreground">
+        Tentang
+      </Link>
+      <span aria-hidden className="text-muted-foreground/40">·</span>
+      <Link href="/progress" className="transition-colors hover:text-foreground">
+        Progres
+      </Link>
+    </nav>
   );
 }
 
@@ -414,6 +430,7 @@ function BrandFooterDefault() {
         <p className="text-[11px] text-muted-foreground">
           PWA · Offline-first · SATUSEHAT-ready · Human-in-the-loop · No LLM
         </p>
+        <FooterNav />
       </div>
     </footer>
   );
