@@ -112,15 +112,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         aria-label="Navigasi utama"
       >
         {/* Brand mark + close (mobile) */}
-        <div className="flex shrink-0 items-center gap-2 border-b border-border/60 px-3 py-3">
+        <div className="flex shrink-0 items-start gap-2 border-b border-border/60 px-3 py-3">
           <Link
             href="/"
-            className="flex min-w-0 items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            className="flex flex-1 items-center gap-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             title="NovaCareEMR — beranda"
           >
             <NovaCareMark className="h-10 w-10 shrink-0" iconSize={22} />
             {!collapsed ? (
-              <span className="min-w-0 truncate font-display text-base font-medium leading-none tracking-tight">
+              <span className="font-display text-[15px] font-medium leading-tight tracking-tight break-words">
                 NovaCare
                 <span className="font-normal text-primary">EMR</span>
               </span>
