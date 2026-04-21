@@ -8,7 +8,6 @@ import {
   type ReactNode,
 } from "react";
 import {
-  Stethoscope,
   Pencil,
   X,
   Crown,
@@ -18,6 +17,37 @@ import {
   EyeOff,
   Info,
 } from "lucide-react";
+
+// ---------- Brand mark (ECG-in-bubble lockup) ----------
+// Deep-teal rounded-square bubble + single QRS complex on a flat baseline.
+// Replaces generic Stethoscope to assert a clinical-but-distinctive identity.
+export function NovaCareMark({
+  className = "h-12 w-12",
+  iconSize = 28,
+}: {
+  className?: string;
+  iconSize?: number;
+}) {
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground ${className}`}
+      aria-hidden
+    >
+      <svg
+        width={iconSize}
+        height={iconSize}
+        viewBox="0 0 28 28"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 14h5.5l1.5-4 2.5 9 2-5 1.5 3h9" />
+      </svg>
+    </div>
+  );
+}
 
 // ---------- Types & constants ----------
 
@@ -220,12 +250,7 @@ export function BrandHeader({ today }: { today: string }) {
           {initial}
         </div>
       ) : (
-        <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground"
-          aria-hidden
-        >
-          <Stethoscope className="h-6 w-6" />
-        </div>
+        <NovaCareMark />
       )}
 
       <div className="min-w-0 flex-1">
@@ -237,8 +262,14 @@ export function BrandHeader({ today }: { today: string }) {
           aria-haspopup="dialog"
           aria-expanded={open}
         >
-          <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">
-            {showCustomName ? brand.clinicName : "NovaCareEMR"}
+          <h1 className="truncate font-display text-xl font-medium tracking-tight md:text-2xl">
+            {showCustomName ? (
+              brand.clinicName
+            ) : (
+              <>
+                NovaCare<span className="font-normal text-primary">EMR</span>
+              </>
+            )}
           </h1>
           {!showCustomName && showAttribution ? (
             <span
