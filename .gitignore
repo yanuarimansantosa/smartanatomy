@@ -26,6 +26,7 @@
 .env
 .env.*
 !.env.example
+!.env.rme.example
 *.pem
 *.key
 *.cert
