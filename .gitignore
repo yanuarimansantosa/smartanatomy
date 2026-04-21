@@ -88,3 +88,6 @@ venv/
 data/
 uploads/
 tmp/
+
+# ---- Reference clones (not part of this repo) ----
+.compare-*/
