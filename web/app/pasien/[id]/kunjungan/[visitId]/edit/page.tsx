@@ -7,6 +7,7 @@ import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { DarkToggle } from "@/components/dark-toggle";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
+import { PatientSubnav } from "@/components/patient-subnav";
 import { DictationOnboarding } from "@/components/dictation-onboarding";
 import { SoapEditor } from "./editor";
 
@@ -60,6 +61,8 @@ export default async function VisitEditPage({
           <NetworkStatus />
         </div>
       </header>
+
+      <PatientSubnav patientId={id} patientName={p.nama} patientNoRm={p.noRm} />
 
       <main className="flex-1 px-6 py-8 md:px-10 md:py-10">
         <div className="mx-auto max-w-6xl">

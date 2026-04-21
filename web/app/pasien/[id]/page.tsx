@@ -12,6 +12,7 @@ import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { DarkToggle } from "@/components/dark-toggle";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
+import { PatientSubnav } from "@/components/patient-subnav";
 import { StartVisitButton } from "./start-visit-button";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,8 @@ export default async function PasienDetailPage({
           <NetworkStatus />
         </div>
       </header>
+
+      <PatientSubnav patientId={id} patientName={p.nama} patientNoRm={p.noRm} />
 
       <main className="flex-1 px-6 py-10 md:px-10 md:py-14">
         <div className="mx-auto max-w-5xl">
