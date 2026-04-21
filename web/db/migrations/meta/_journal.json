@@ -36,6 +36,13 @@
       "when": 1776788883994,
       "tag": "0004_schema_s3_prescriptions_billing_feedback",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776811855117,
+      "tag": "0005_visit_procedures",
+      "breakpoints": true
     }
   ]
 }

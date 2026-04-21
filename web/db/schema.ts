@@ -510,6 +510,43 @@ export type Prescription = typeof prescriptions.$inferSelect;
 export type NewPrescription = typeof prescriptions.$inferInsert;
 
 // ----------------------------------------------------------------
+// Visit procedures — tindakan ICD-9-CM yang dilakukan di kunjungan.
+// Replace-all per save (sama pattern dengan visit_diagnoses & prescriptions).
+// fee_idr disimpan saat tindakan dicatat (snapshot tarif), supaya invoice
+// historis tetap akurat meski daftar tarif berubah di masa depan.
+// ----------------------------------------------------------------
+
+export const visitProcedures = pgTable(
+  "visit_procedures",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    visitId: uuid("visit_id")
+      .notNull()
+      .references(() => visits.id, { onDelete: "cascade" }),
+
+    icd9Code: varchar("icd9_code", { length: 10 }).notNull(),
+    icd9NameId: text("icd9_name_id"),
+    icd9NameEn: text("icd9_name_en"),
+
+    isOperative: boolean("is_operative").notNull().default(false),
+    feeIdr: integer("fee_idr").notNull().default(0),
+
+    notes: text("notes"),
+    sortOrder: smallint("sort_order").notNull().default(0),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    index("visit_procedures_visit_idx").on(t.visitId, t.sortOrder),
+    index("visit_procedures_icd9_idx").on(t.icd9Code),
+  ],
+);
+
+export type VisitProcedure = typeof visitProcedures.$inferSelect;
+export type NewVisitProcedure = typeof visitProcedures.$inferInsert;
+
+// ----------------------------------------------------------------
 // Billing — one invoice per visit. paid_amount tracked separately
 // from total to support partial payments.
 // ----------------------------------------------------------------

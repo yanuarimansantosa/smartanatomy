@@ -258,12 +258,12 @@ export function BrandHeader({ today }: { today: string }) {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="group -mx-1 inline-flex max-w-full items-center gap-2 rounded-md px-1 py-0.5 text-left transition-colors hover:bg-muted"
+          className="group -mx-1 flex w-full max-w-full items-start gap-2 rounded-md px-1 py-0.5 text-left transition-colors hover:bg-muted"
           title="Klik untuk ubah brand"
           aria-haspopup="dialog"
           aria-expanded={open}
         >
-          <h1 className="truncate font-display text-xl font-medium tracking-tight md:text-2xl">
+          <h1 className="min-w-0 flex-1 break-words font-display text-xl font-medium leading-tight tracking-tight md:text-2xl">
             {showCustomName ? (
               brand.clinicName
             ) : (
@@ -272,23 +272,12 @@ export function BrandHeader({ today }: { today: string }) {
               </>
             )}
           </h1>
-          {!showCustomName && showAttribution ? (
-            <span
-              className="inline-flex items-center gap-1 rounded-full border bg-muted/60 px-2 py-0.5 text-xs font-medium text-muted-foreground"
-              title="Powered by Salam AI"
-            >
-              <span lang="ar" className="text-sm leading-none">
-                سلام
-              </span>
-              <span>Salam AI</span>
-            </span>
-          ) : null}
           <Pencil
-            className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 transition-opacity group-hover:opacity-100"
+            className="mt-1 h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 transition-opacity group-hover:opacity-100"
             aria-hidden
           />
         </button>
-        <div className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
           <span>{today}</span>
           {brand.tagline ? (
             <>
@@ -296,19 +285,23 @@ export function BrandHeader({ today }: { today: string }) {
               <span className="text-xs italic">{brand.tagline}</span>
             </>
           ) : null}
-          {showCustomName && showAttribution ? (
+          {showAttribution ? (
             <>
               <Dot />
-              <span className="text-xs">
-                powered by{" "}
-                <span className="font-semibold text-foreground/70">
-                  NovaCareEMR
+              <span className="inline-flex items-center gap-1 text-xs">
+                {showCustomName ? (
+                  <>
+                    powered by{" "}
+                    <span className="font-semibold text-foreground/70">
+                      NovaCareEMR
+                    </span>
+                    <Dot />
+                  </>
+                ) : null}
+                <span lang="ar" className="text-sm leading-none">
+                  سلام
                 </span>
-                <Dot />
-                <span className="inline-flex items-center gap-1">
-                  <span lang="ar">سلام</span>
-                  <span>Salam AI</span>
-                </span>
+                <span>Salam AI</span>
               </span>
             </>
           ) : null}
