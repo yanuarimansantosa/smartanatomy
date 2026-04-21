@@ -15,6 +15,13 @@
       "when": 1776787498538,
       "tag": "0001_audit_logs_init",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776788413351,
+      "tag": "0002_schema_s1_tenants_users_locations",
+      "breakpoints": true
     }
   ]
 }

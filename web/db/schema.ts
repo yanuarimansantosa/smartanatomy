@@ -9,6 +9,9 @@ import {
   uniqueIndex,
   pgEnum,
   jsonb,
+  boolean,
+  smallint,
+  integer,
 } from "drizzle-orm/pg-core";
 
 // ============================================================
@@ -95,3 +98,136 @@ export const auditLogs = pgTable(
 
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type NewAuditLog = typeof auditLogs.$inferInsert;
+
+// ============================================================
+// Stage S1 — Multi-tenant foundation: tenants, users, locations.
+// Per DB Schema spec v1.0. RLS policies + tenant_id wiring on existing
+// tables (patients, audit_logs) deferred to a later stage so /pasien
+// keeps working in single-tenant mode.
+// ============================================================
+
+export const subscriptionStatusEnum = pgEnum("subscription_status", [
+  "trial",
+  "active",
+  "suspended",
+]);
+
+export const tenants = pgTable(
+  "tenants",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    // subdomain slug — must be URL-safe, lowercase
+    slug: varchar("slug", { length: 64 }).notNull(),
+
+    name: varchar("name", { length: 200 }).notNull(),
+    logoUrl: text("logo_url"),
+
+    subscriptionStatus: subscriptionStatusEnum("subscription_status")
+      .notNull()
+      .default("trial"),
+    subscriptionUntil: date("subscription_until", { mode: "string" }),
+
+    flatRateIdr: integer("flat_rate_idr"), // bulanan flat-rate (IDR)
+    satusehatOrgId: varchar("satusehat_org_id", { length: 64 }),
+
+    settings: jsonb("settings").$type<Record<string, unknown>>().default({}),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("tenants_slug_idx").on(t.slug)],
+);
+
+export type Tenant = typeof tenants.$inferSelect;
+export type NewTenant = typeof tenants.$inferInsert;
+
+// ----------------------------------------------------------------
+// Users — staff scoped per tenant. Email is unique per tenant
+// (a doctor email can exist in two unrelated tenants legitimately).
+// Password stored as bcrypt hash (cost ≥12 enforced at app layer).
+// ----------------------------------------------------------------
+
+export const userRoleEnum = pgEnum("user_role", [
+  "doctor",
+  "nurse",
+  "tenant_admin",
+]);
+
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "restrict" }),
+
+    name: varchar("name", { length: 200 }).notNull(),
+    email: varchar("email", { length: 200 }).notNull(),
+
+    // bcrypt hash — never plain text. App enforces cost=12.
+    passwordHash: text("password_hash").notNull(),
+
+    role: userRoleEnum("role").notNull(),
+
+    // doctor-only fields
+    specialty: varchar("specialty", { length: 100 }), // e.g. "THT-KL", "Sp.A"
+    strNumber: varchar("str_number", { length: 60 }),
+    sipNumber: varchar("sip_number", { length: 60 }),
+
+    isActive: boolean("is_active").notNull().default(true),
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("users_tenant_email_idx").on(t.tenantId, t.email),
+    index("users_tenant_role_idx").on(t.tenantId, t.role),
+  ],
+);
+
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+
+// ----------------------------------------------------------------
+// Locations — physical clinic branches per tenant.
+// operating_hours: { mon: {open:"08:00", close:"17:00"}, ... }
+// slot_duration_minutes drives schedules generation (Stage S4).
+// ----------------------------------------------------------------
+
+export type OperatingHours = Partial<
+  Record<
+    "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun",
+    { open: string; close: string } | null
+  >
+>;
+
+export const locations = pgTable(
+  "locations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+
+    name: varchar("name", { length: 200 }).notNull(),
+    address: text("address"),
+    city: varchar("city", { length: 100 }),
+    phone: varchar("phone", { length: 30 }),
+
+    operatingHours: jsonb("operating_hours").$type<OperatingHours>(),
+
+    slotDurationMinutes: smallint("slot_duration_minutes").notNull().default(15),
+
+    isActive: boolean("is_active").notNull().default(true),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("locations_tenant_idx").on(t.tenantId, t.isActive)],
+);
+
+export type Location = typeof locations.$inferSelect;
+export type NewLocation = typeof locations.$inferInsert;
