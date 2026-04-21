@@ -396,10 +396,6 @@ function FooterNav() {
       <Link href="/tentang" className="transition-colors hover:text-foreground">
         Tentang
       </Link>
-      <span aria-hidden className="text-muted-foreground/40">·</span>
-      <Link href="/progress" className="transition-colors hover:text-foreground">
-        Progres
-      </Link>
     </nav>
   );
 }

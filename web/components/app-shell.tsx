@@ -12,7 +12,6 @@ import {
   Menu,
   ScrollText,
   Settings,
-  Sparkles,
   Users,
   X,
   type LucideIcon,
@@ -49,7 +48,6 @@ const PRIMARY: NavItem[] = [
 ];
 
 const SECONDARY: NavItem[] = [
-  { label: "Progres", href: "/progress", Icon: Sparkles },
   { label: "Tentang", href: "/tentang", Icon: Info },
   {
     label: "Pengaturan",
