@@ -353,6 +353,9 @@ export function BrandFooter() {
           {mainLine}
         </p>
         <p className="text-xs italic text-muted-foreground">{taglineLine}</p>
+        <p className="text-[11px] italic text-muted-foreground/80">
+          Intelligence that greets humanity first
+        </p>
         <p className="text-[11px] text-muted-foreground">
           PWA · Offline-first · SATUSEHAT-ready · Human-in-the-loop · No LLM
         </p>
@@ -373,6 +376,9 @@ function BrandFooterDefault() {
         </p>
         <p className="text-xs italic text-muted-foreground">
           Teknologi yang Membawa Kesejahteraan Berkeadilan
+        </p>
+        <p className="text-[11px] italic text-muted-foreground/80">
+          Intelligence that greets humanity first
         </p>
         <p className="text-[11px] text-muted-foreground">
           PWA · Offline-first · SATUSEHAT-ready · Human-in-the-loop · No LLM

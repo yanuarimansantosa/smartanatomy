@@ -11,13 +11,33 @@ import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
 
+function jamWIB(): number {
+  const s = new Intl.DateTimeFormat("id-ID", {
+    hour: "numeric",
+    hour12: false,
+    timeZone: "Asia/Jakarta",
+  }).format(new Date());
+  const n = parseInt(s, 10);
+  return Number.isFinite(n) ? n : 12;
+}
+
+function sapaanWaktu(h: number): string {
+  if (h < 11) return "Selamat pagi";
+  if (h < 15) return "Selamat siang";
+  if (h < 18) return "Selamat sore";
+  return "Selamat malam";
+}
+
 export default function Home() {
+  const now = new Date();
   const today = new Intl.DateTimeFormat("id-ID", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date());
+    timeZone: "Asia/Jakarta",
+  }).format(now);
+  const sapaan = sapaanWaktu(jamWIB());
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -31,11 +51,16 @@ export default function Home() {
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8 md:px-10">
         <section className="mb-10">
+          <p className="mb-1 text-sm font-medium uppercase tracking-wider text-primary/80">
+            <span lang="ar" className="text-base leading-none">سلام</span>
+            <span className="ml-2">· salam</span>
+          </p>
           <h2 className="mb-2 text-2xl font-semibold tracking-tight md:text-3xl">
-            Hai, Dokter.
+            {sapaan}, Dokter.
           </h2>
-          <p className="text-base text-muted-foreground md:text-lg">
-            Pilih aksi cepat untuk memulai sesi konsultasi.
+          <p className="max-w-2xl text-base text-muted-foreground md:text-lg">
+            Sistem siap membaca jejak hari ini bersamamu. Keputusan klinis tetap
+            ada di tanganmu — kami hanya menyiapkan yang relevan.
           </p>
         </section>
 
@@ -73,11 +98,13 @@ export default function Home() {
         </section>
 
         <section className="mt-12 rounded-2xl border bg-muted/30 p-6 md:p-8">
-          <h3 className="mb-2 text-lg font-semibold">Phase 0 — Foundation aktif</h3>
-          <p className="text-sm text-muted-foreground">
-            Aplikasi siap dijalankan offline. Status sinkronisasi terlihat di pojok
-            kanan atas. Phase berikutnya: Core RME (CRUD pasien, sesi konsultasi,
-            ICD-10 autocomplete) — lihat <code className="rounded bg-background px-1.5 py-0.5 text-xs">docs/02-stack-proposal.md</code>.
+          <h3 className="mb-2 text-lg font-semibold">
+            Membaca dulu, menyimpulkan kemudian.
+          </h3>
+          <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
+            Rekam medis tidak meninggalkan ruangan ini. Tidak ada AI generatif di
+            jalur klinis. Setiap saran datang dengan alasan dan bisa kamu koreksi
+            — sistem mencatat, belajar, dan keesokan harinya menjadi lebih bijak.
           </p>
         </section>
       </main>
