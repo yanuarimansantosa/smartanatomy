@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Palette, Check, LayoutGrid } from "lucide-react";
 
 export type ThemeId =
+  | "internasional"
   | "teduh"
   | "hangat"
   | "selaras"
@@ -45,6 +46,16 @@ export const TIER_LABEL: Record<ThemeTier, string> = {
 
 export const THEMES: ThemeEntry[] = [
   // ---------- Original NovaCareEMR palettes ----------
+  {
+    id: "internasional",
+    name: "Internasional",
+    tagline: "Premium Clinical · International Hospital",
+    inspiration: "RS Pondok Indah · Bumrungrad · Mayo Clinic",
+    swatch: ["#0F4F4D", "#A87C2F", "#FAF8F4"],
+    category: "original",
+    mode: "light",
+    tier: "basic",
+  },
   {
     id: "teduh",
     name: "Teduh",
@@ -190,13 +201,13 @@ export function applyTheme(id: ThemeId) {
 }
 
 export function getStoredTheme(): ThemeId {
-  if (typeof window === "undefined") return "teduh";
+  if (typeof window === "undefined") return "internasional";
   const saved = localStorage.getItem(STORAGE_KEY) as ThemeId | null;
-  return saved ?? "teduh";
+  return saved ?? "internasional";
 }
 
 export function ThemeSwitcher() {
-  const [current, setCurrent] = useState<ThemeId>("teduh");
+  const [current, setCurrent] = useState<ThemeId>("internasional");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

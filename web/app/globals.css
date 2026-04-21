@@ -10,6 +10,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-display: var(--font-display, var(--font-sans));
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,11 +51,52 @@
 
 /* ==========================================================================
    Salam AI · NovaCareEMR — Brand Themes
-   3 varian untuk preview. Default = Teduh.
-   Switcher: set class name pada <html>: theme-teduh / theme-hangat / theme-selaras
+   Default = Internasional (premium clinical, international hospital tier).
+   Other originals: Teduh, Hangat, Selaras (tetap tersedia via switcher).
    ========================================================================== */
 
+/* INTERNASIONAL — Premium clinical, international hospital tier
+   Inspirasi: RS Pondok Indah · Bumrungrad · Mayo Clinic · Cleveland Clinic
+   DNA: deep teal Salam + warm ivory hospitality + restrained gold accent.
+   Tipografi: Playfair Display (display) + Inter (body) — editorial clinical. */
 :root,
+.theme-internasional {
+  --background: #FAF8F4;
+  --foreground: #1B2426;
+  --card: #FFFFFF;
+  --card-foreground: #1B2426;
+  --popover: #FFFFFF;
+  --popover-foreground: #1B2426;
+  --primary: #0F4F4D;
+  --primary-foreground: #F5F2EA;
+  --secondary: #EAEFE9;
+  --secondary-foreground: #0F4F4D;
+  --muted: #EFEAE0;
+  --muted-foreground: #6B6E66;
+  --accent: #A87C2F;
+  --accent-foreground: #FFFFFF;
+  --destructive: #B23A2C;
+  --border: #E5DFD2;
+  --input: #E5DFD2;
+  --ring: #0F4F4D;
+  --chart-1: #0F4F4D;
+  --chart-2: #2A8A86;
+  --chart-3: #A87C2F;
+  --chart-4: #6B8E7E;
+  --chart-5: #4A4339;
+  --radius: 0.625rem;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1B2426;
+  --sidebar-primary: #0F4F4D;
+  --sidebar-primary-foreground: #F5F2EA;
+  --sidebar-accent: #EAEFE9;
+  --sidebar-accent-foreground: #0F4F4D;
+  --sidebar-border: #E5DFD2;
+  --sidebar-ring: #0F4F4D;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-playfair);
+}
+
 .theme-teduh {
   /* TEDUH — Clinical Calm. Teal primary, warm earth accent. */
   --background: #FAFAF7;

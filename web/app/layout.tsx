@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +10,19 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -67,7 +80,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased theme-teduh`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${playfair.variable} h-full antialiased theme-internasional`}
     >
       <head>
         <script
@@ -75,7 +88,7 @@ export default function RootLayout({
           // Filters out ANY existing theme-* class so new palettes work without
           // needing to update this list.
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'teduh';var r=document.documentElement;var c=(r.className||'').split(/\\s+/).filter(function(x){return x&&x.indexOf('theme-')!==0;});c.push('theme-'+t);r.className=c.join(' ');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('salamai.theme')||'internasional';var r=document.documentElement;var c=(r.className||'').split(/\\s+/).filter(function(x){return x&&x.indexOf('theme-')!==0;});c.push('theme-'+t);r.className=c.join(' ');}catch(e){}})();`,
           }}
         />
       </head>
