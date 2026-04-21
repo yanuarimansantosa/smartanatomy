@@ -29,6 +29,13 @@
       "when": 1776788671113,
       "tag": "0003_schema_s2_visits_soap_diagnoses",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776788883994,
+      "tag": "0004_schema_s3_prescriptions_billing_feedback",
+      "breakpoints": true
     }
   ]
 }

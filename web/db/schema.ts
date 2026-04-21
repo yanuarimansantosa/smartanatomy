@@ -437,3 +437,226 @@ export const visitDiagnoses = pgTable(
 
 export type VisitDiagnosis = typeof visitDiagnoses.$inferSelect;
 export type NewVisitDiagnosis = typeof visitDiagnoses.$inferInsert;
+
+// ============================================================
+// Stage S3 — Prescription, Billing, Feedback (Salam AI loop core).
+// Per DB Schema spec v1.0.
+//
+// prescriptions   — drugs prescribed in a visit, R/YYYY-NNNN-DD numbering
+// billing_invoices — 1:1 with visit, INV-YYYY-NNNN
+// feedback_logs    — closed-loop AI learning. Captures what AI suggested
+//                    vs what the doctor chose. Drives nightly re-rank.
+//                    THIS is the table that makes Salam AI "Salam AI".
+// ============================================================
+
+export const drugFormEnum = pgEnum("drug_form", [
+  "tablet",
+  "kapsul",
+  "sirup",
+  "tetes",
+  "spray",
+  "salep",
+  "injeksi",
+  "lainnya",
+]);
+export const drugRouteEnum = pgEnum("drug_route", [
+  "oral",
+  "topical",
+  "inhalasi",
+  "tetes",
+  "injeksi",
+  "lainnya",
+]);
+
+export const prescriptions = pgTable(
+  "prescriptions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    visitId: uuid("visit_id")
+      .notNull()
+      .references(() => visits.id, { onDelete: "cascade" }),
+
+    // R/YYYY-NNNN-DD — unique per tenant; app generates atomically.
+    // Tenant scope inferred via visits.tenant_id; we still index it tightly.
+    prescriptionNumber: varchar("prescription_number", { length: 32 }).notNull(),
+
+    drugName: varchar("drug_name", { length: 200 }).notNull(),
+    genericName: varchar("generic_name", { length: 200 }),
+
+    drugForm: drugFormEnum("drug_form"),
+    strength: varchar("strength", { length: 60 }), // "500mg", "250mg/5ml"
+    dose: varchar("dose", { length: 60 }), // "1 tab", "5ml"
+    frequency: varchar("frequency", { length: 60 }), // "3x sehari", "tiap 8 jam"
+    duration: varchar("duration", { length: 60 }), // "5 hari", "PRN"
+    route: drugRouteEnum("route"),
+    instructions: text("instructions"), // "setelah makan", "habiskan"
+
+    quantity: smallint("quantity"),
+    unit: varchar("unit", { length: 30 }),
+
+    sortOrder: smallint("sort_order").notNull().default(0),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("prescriptions_number_idx").on(t.prescriptionNumber),
+    index("prescriptions_visit_idx").on(t.visitId, t.sortOrder),
+    index("prescriptions_drug_name_idx").on(t.drugName),
+  ],
+);
+
+export type Prescription = typeof prescriptions.$inferSelect;
+export type NewPrescription = typeof prescriptions.$inferInsert;
+
+// ----------------------------------------------------------------
+// Billing — one invoice per visit. paid_amount tracked separately
+// from total to support partial payments.
+// ----------------------------------------------------------------
+
+export const paymentMethodEnum = pgEnum("payment_method", [
+  "cash",
+  "transfer",
+  "qris",
+  "kartu",
+]);
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "unpaid",
+  "paid",
+  "partial",
+]);
+
+export const billingInvoices = pgTable(
+  "billing_invoices",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "restrict" }),
+    visitId: uuid("visit_id")
+      .notNull()
+      .references(() => visits.id, { onDelete: "restrict" }),
+
+    invoiceNumber: varchar("invoice_number", { length: 32 }).notNull(),
+
+    subtotalIdr: integer("subtotal_idr").notNull().default(0),
+    discountIdr: integer("discount_idr").notNull().default(0),
+    totalIdr: integer("total_idr").notNull().default(0),
+
+    paymentMethod: paymentMethodEnum("payment_method"),
+    paymentStatus: paymentStatusEnum("payment_status")
+      .notNull()
+      .default("unpaid"),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    paidAmountIdr: integer("paid_amount_idr").notNull().default(0),
+
+    notes: text("notes"),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("billing_invoices_visit_idx").on(t.visitId),
+    uniqueIndex("billing_invoices_tenant_number_idx").on(t.tenantId, t.invoiceNumber),
+    index("billing_invoices_status_idx").on(t.tenantId, t.paymentStatus, t.createdAt),
+  ],
+);
+
+export type BillingInvoice = typeof billingInvoices.$inferSelect;
+export type NewBillingInvoice = typeof billingInvoices.$inferInsert;
+
+// ----------------------------------------------------------------
+// Feedback logs — closed-loop AI learning core.
+//
+// Two modes:
+//   passive: row created the moment AI suggests; suggestion_viewed=false
+//   active : doctor adjusts; correction_reason captured; retrains nightly
+//
+// `contributed_to_global` controls whether this row's anonymised weight
+// flows to global_preferences (multi-tenant pooled learning). Default
+// false — must be explicitly opted-in by tenant_admin.
+// ----------------------------------------------------------------
+
+export const correctionReasonEnum = pgEnum("correction_reason", [
+  "not_relevant",
+  "already_known",
+  "other_finding",
+  "personal_pref",
+]);
+export const drugRejectReasonEnum = pgEnum("drug_reject_reason", [
+  "side_effect",
+  "not_in_formulary",
+  "personal_pref",
+  "patient_preference",
+]);
+
+export type SuggestedDx = {
+  rank: number;
+  icd10: string;
+  confidence: number;
+  reasoning?: string;
+};
+
+export type SuggestedDrug = {
+  rank: number;
+  drug_name: string;
+  confidence: number;
+};
+
+export type FinalDrug = {
+  drug_name: string;
+  dose?: string;
+  frequency?: string;
+};
+
+export const feedbackLogs = pgTable(
+  "feedback_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => visits.id, { onDelete: "cascade" }),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "restrict" }),
+    doctorId: uuid("doctor_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "restrict" }),
+    specialty: varchar("specialty", { length: 100 }), // copied from doctor at write time
+
+    // What AI suggested
+    suggestedDx: jsonb("suggested_dx").$type<SuggestedDx[]>(),
+    suggestedDrugs: jsonb("suggested_drugs").$type<SuggestedDrug[]>(),
+
+    // What doctor chose
+    chosenDxRank: smallint("chosen_dx_rank"), // 0=#1, 1=#2, null=ignored
+    chosenDxIcd10: varchar("chosen_dx_icd10", { length: 10 }),
+    dxWasSuggested: boolean("dx_was_suggested").notNull().default(false),
+
+    finalDrugs: jsonb("final_drugs").$type<FinalDrug[]>(),
+    drugOverride: boolean("drug_override").notNull().default(false),
+
+    // Engagement signals
+    engagementMs: integer("engagement_ms"),
+    suggestionViewed: boolean("suggestion_viewed").notNull().default(false),
+
+    correctionReason: correctionReasonEnum("correction_reason"),
+    drugRejectReason: drugRejectReasonEnum("drug_reject_reason"),
+
+    // Sharing
+    contributedToGlobal: boolean("contributed_to_global").notNull().default(false),
+    anonymizedWeight: jsonb("anonymized_weight").$type<Record<string, number>>(),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    index("feedback_logs_session_idx").on(t.sessionId),
+    index("feedback_logs_doctor_idx").on(t.doctorId, t.createdAt),
+    index("feedback_logs_specialty_idx").on(t.specialty, t.createdAt),
+  ],
+);
+
+export type FeedbackLog = typeof feedbackLogs.$inferSelect;
+export type NewFeedbackLog = typeof feedbackLogs.$inferInsert;
