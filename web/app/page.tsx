@@ -66,7 +66,8 @@ export default function Home() {
             </p>
 
             <h1 className="font-display text-4xl font-medium leading-[1.05] tracking-tight text-foreground md:text-5xl xl:text-6xl">
-              {salam}, Dokter.
+              {salam},{" "}
+              <span className="italic font-normal text-primary">Dokter.</span>
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
