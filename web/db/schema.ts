@@ -8,6 +8,7 @@ import {
   index,
   uniqueIndex,
   pgEnum,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 // ============================================================
@@ -53,3 +54,44 @@ export const patients = pgTable(
 
 export type Patient = typeof patients.$inferSelect;
 export type NewPatient = typeof patients.$inferInsert;
+
+// ============================================================
+// Audit log — append-only.
+// PRD prinsip #6 Accountability: setiap akses RM (termasuk RAG query) tercatat.
+// PRD HARD RULE: immutable — DELETE/UPDATE diblokir di level Postgres trigger
+// (lihat migration). App hanya boleh INSERT.
+// Multi-tenant fields (tenant_id) ditambah saat schema S1 ship.
+// ============================================================
+export const auditLogs = pgTable(
+  "audit_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    // Pelaku — nullable sampai auth ship; saat itu actorId = users.id
+    actorId: varchar("actor_id", { length: 200 }),
+    actorLabel: varchar("actor_label", { length: 200 }), // human readable: "dr. Yanuar"
+
+    // create | update | delete | view | sign | ai_query | login | export | ...
+    action: varchar("action", { length: 60 }).notNull(),
+
+    // patient | visit | prescription | soap_note | feedback_log | session | ...
+    entity: varchar("entity", { length: 60 }).notNull(),
+    entityId: uuid("entity_id"), // nullable untuk event yang bukan baris (mis. session login)
+
+    beforeJson: jsonb("before_json"),
+    afterJson: jsonb("after_json"),
+
+    ipAddress: varchar("ip_address", { length: 64 }),
+    userAgent: text("user_agent"),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    index("audit_logs_entity_idx").on(t.entity, t.entityId),
+    index("audit_logs_actor_idx").on(t.actorId, t.createdAt),
+    index("audit_logs_created_idx").on(t.createdAt),
+  ],
+);
+
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type NewAuditLog = typeof auditLogs.$inferInsert;

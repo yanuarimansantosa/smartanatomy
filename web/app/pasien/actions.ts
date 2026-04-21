@@ -3,6 +3,7 @@
 import { db } from "@/db/client";
 import { patients } from "@/db/schema";
 import { nextNoRm } from "@/lib/patients";
+import { logEvent } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -86,6 +87,15 @@ export async function createPatient(
     }
     return { ok: false, message: msg };
   }
+
+  // Append-only audit log — PRD prinsip #6 Accountability.
+  // No actor identity until auth ships; record "system" with the request IP.
+  await logEvent({
+    action: "create",
+    entity: "patient",
+    entityId: createdId,
+    after: { noRm, nama: data.nama, jk: data.jk, tglLahir: data.tglLahir },
+  });
 
   revalidatePath("/pasien");
   redirect(`/pasien/${createdId}`);
