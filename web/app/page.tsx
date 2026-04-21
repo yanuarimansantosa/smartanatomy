@@ -12,6 +12,7 @@ import { NetworkStatus } from "@/components/network-status";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { DarkToggle } from "@/components/dark-toggle";
 import { BrandHeader, BrandFooter } from "@/components/brand-header";
+import { AppOnboarding } from "@/components/app-onboarding";
 
 function jamWIB(): number {
   const s = new Intl.DateTimeFormat("id-ID", {
@@ -125,6 +126,7 @@ export default function Home() {
       </main>
 
       <BrandFooter />
+      <AppOnboarding />
     </div>
   );
 }
