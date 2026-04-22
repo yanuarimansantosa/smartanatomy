@@ -38,6 +38,9 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
 
   // Module 10 — Tuli Kongenital (H90.x) — JCIH 1-3-6 golden period
   "tuli-kongenital": async () => (await import("./specs/tuli-kongenital")).default,
+
+  // Module 11 — Serumen Impaksi (H61.2) — high-volume cashflow
+  "serumen-impaksi": async () => (await import("./specs/serumen-impaksi")).default,
 };
 
 export type ModuleListing = {
@@ -130,6 +133,13 @@ export const MODULE_LISTINGS: ModuleListing[] = [
     subspecialty: "Telinga / Pediatrik",
     tags: ["H90.x", "JCIH 1-3-6", "OAE/AABR", "Golden Period"],
     iconName: "baby",
+  },
+  {
+    id: "serumen-impaksi",
+    title: "Serumen Impaksi",
+    subspecialty: "Telinga",
+    tags: ["H61.2", "96.52", "High-volume", "AAO-HNS"],
+    iconName: "droplets",
   },
 ];
 
