@@ -19,7 +19,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   "omsk-aman": async () => (await import("./specs/omsk-aman")).default,
 
   // Module 4 — OMSK bahaya (H66.2) + komplikasi panel
-  // "omsk-bahaya": async () => (await import("./specs/omsk-bahaya")).default,
+  "omsk-bahaya": async () => (await import("./specs/omsk-bahaya")).default,
 
   // Module 5 — Foreign Body Airway (T17) — EMERGENCY MODE
   // "fb-airway": async () => (await import("./specs/fb-airway")).default,
