@@ -10,7 +10,7 @@ import type { ModuleSpec } from "./types";
 
 const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   // Module 1 — Tonsilitis Kronik (J35.0) — Brodsky + STOP-BANG
-  // tonsilitis: async () => (await import("./specs/tonsilitis")).default,
+  tonsilitis: async () => (await import("./specs/tonsilitis")).default,
 
   // Module 2 — Rinosinusitis Kronik (J32) — SNOT-22 + EPOS
   // crs: async () => (await import("./specs/crs")).default,
