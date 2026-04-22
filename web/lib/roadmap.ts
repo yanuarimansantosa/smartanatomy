@@ -198,6 +198,29 @@ export const ROADMAP: RoadmapCategory[] = [
         expectedTag: "v0.17.5-doctor-identity-config",
       },
       {
+        id: "surat-sakit",
+        title: "Surat Keterangan Sakit MVP (A4 portrait, terbilang ID, tap-only)",
+        expectedTag: "v0.17.7-surat-sakit-mvp",
+      },
+      {
+        id: "surat-rujukan",
+        title:
+          "Surat Rujukan MVP (auto-populate SOAP+Dx+Rx, 8 destinasi Semarang)",
+        expectedTag: "v0.17.8-surat-rujukan-mvp",
+      },
+      {
+        id: "patient-history-enriched",
+        title:
+          "Riwayat kunjungan diperkaya — primary dx + jumlah resep per row",
+        expectedTag: "v0.17.9-patient-history-enriched",
+      },
+      {
+        id: "surat-sehat",
+        title:
+          "Surat Keterangan Sehat MVP (keperluan quick-pick, scope THT toggle)",
+        expectedTag: "v0.17.10-surat-sehat-mvp",
+      },
+      {
         id: "ztci-editor",
         title:
           "ZTCI Layer 1 — engine-primary visit editor (tap-only, zero typing)",
