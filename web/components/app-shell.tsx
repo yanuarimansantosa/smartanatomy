@@ -20,6 +20,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { NovaCareMark } from "./brand-header";
+import { UniversalSearch } from "./universal-search";
 
 const COLLAPSE_KEY = "novacare:nav:collapsed";
 
@@ -199,7 +200,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="sticky top-0 z-20 flex items-center justify-end gap-2 border-b border-border/60 bg-background/85 px-3 py-2 pl-16 backdrop-blur md:px-6 md:pl-6">
+          <UniversalSearch />
+        </div>
+        {children}
+      </div>
     </div>
   );
 }
