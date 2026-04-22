@@ -32,6 +32,9 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
 
   // Module 8 — Trauma Wajah & Maksilofasial (S02.x) — RED FLAG + imaging
   "trauma-wajah": async () => (await import("./specs/trauma-wajah")).default,
+
+  // Module 9 — KNF (C11) — RED FLAG-DRIVEN early detection
+  knf: async () => (await import("./specs/knf")).default,
 };
 
 export type ModuleListing = {
@@ -110,6 +113,13 @@ export const MODULE_LISTINGS: ModuleListing[] = [
     subspecialty: "Trauma",
     tags: ["S02.x", "RED FLAG", "imaging"],
     iconName: "shield-alert",
+  },
+  {
+    id: "knf",
+    title: "Karsinoma Nasofaring",
+    subspecialty: "Onkologi THT",
+    tags: ["C11", "RED FLAG", "Early Detection", "EBV"],
+    iconName: "scan-search",
   },
 ];
 
