@@ -8,7 +8,7 @@
  * the doctor sees consequences before tapping "Apply ke kunjungan".
  */
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertOctagon,
@@ -22,6 +22,7 @@ import {
   ClipboardList,
   ExternalLink,
   Info,
+  Loader2,
   Pill,
   Save,
   Scissors,
@@ -46,10 +47,12 @@ import {
   recomputeScoring,
   severityTone,
 } from "@/lib/modules/engine";
+import { getModuleSpec, type ModuleListing } from "@/lib/modules/registry";
 import { applyModuleSnapshot } from "@/app/pasien/[id]/kunjungan/[visitId]/modul/[moduleId]/apply-actions";
 
 type Props = {
-  spec: ModuleSpec;
+  moduleId: string;
+  listing: ModuleListing;
   visitId: string;
   patientId: string;
   chiefComplaint: string;
@@ -64,7 +67,8 @@ function fmtIdr(v: number): string {
 }
 
 export function ModuleRenderer({
-  spec,
+  moduleId,
+  listing,
   visitId,
   patientId,
   chiefComplaint,
@@ -73,37 +77,69 @@ export function ModuleRenderer({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const [ctx, setCtx] = useState<ModuleContext>(() =>
-    emptyContext(spec, chiefComplaint),
-  );
+  // Spec is loaded client-side because Next 16 ga bisa serialize functions
+  // (compute / evaluate / soapMapping.subjective dst) lewat server→client boundary.
+  const [spec, setSpec] = useState<ModuleSpec | null>(null);
+  const [specLoading, setSpecLoading] = useState(true);
+  const [ctx, setCtx] = useState<ModuleContext | null>(null);
   const [openScoring, setOpenScoring] = useState<Record<string, boolean>>({});
 
-  // Live derived values
-  const cdss = useMemo<CdssSuggestion[]>(() => evaluateCdss(spec, ctx), [spec, ctx]);
-  const emergency = useMemo(() => activeEmergency(spec, ctx), [spec, ctx]);
-  const soap = useMemo(() => composeSoap(spec, ctx), [spec, ctx]);
-  const total = useMemo(() => billingTotal(spec, ctx), [spec, ctx]);
+  useEffect(() => {
+    let cancelled = false;
+    setSpecLoading(true);
+    getModuleSpec(moduleId)
+      .then((s) => {
+        if (cancelled) return;
+        setSpec(s);
+        if (s) setCtx(emptyContext(s, chiefComplaint));
+      })
+      .finally(() => {
+        if (!cancelled) setSpecLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [moduleId, chiefComplaint]);
+
+  // Live derived values — bail out gracefully when spec/ctx tidak siap.
+  const cdss = useMemo<CdssSuggestion[]>(
+    () => (spec && ctx ? evaluateCdss(spec, ctx) : []),
+    [spec, ctx],
+  );
+  const emergency = useMemo(
+    () => (spec && ctx ? activeEmergency(spec, ctx) : null),
+    [spec, ctx],
+  );
+  const soap = useMemo(
+    () => (spec && ctx ? composeSoap(spec, ctx) : { S: "", O: "", A: "", P: "" }),
+    [spec, ctx],
+  );
+  const total = useMemo(
+    () => (spec && ctx ? billingTotal(spec, ctx) : 0),
+    [spec, ctx],
+  );
 
   function toggleAnamnesis(id: string) {
-    setCtx((c) => ({
-      ...c,
-      anamnesis: { ...c.anamnesis, [id]: !c.anamnesis[id] },
-    }));
+    setCtx((c) =>
+      c ? { ...c, anamnesis: { ...c.anamnesis, [id]: !c.anamnesis[id] } } : c,
+    );
   }
   function toggleExam(id: string) {
-    setCtx((c) => ({
-      ...c,
-      examination: { ...c.examination, [id]: !c.examination[id] },
-    }));
+    setCtx((c) =>
+      c
+        ? { ...c, examination: { ...c.examination, [id]: !c.examination[id] } }
+        : c,
+    );
   }
   function toggleTreatment(id: string) {
-    setCtx((c) => ({
-      ...c,
-      treatments: { ...c.treatments, [id]: !c.treatments[id] },
-    }));
+    setCtx((c) =>
+      c ? { ...c, treatments: { ...c.treatments, [id]: !c.treatments[id] } } : c,
+    );
   }
   function setScoringValue(scoringId: string, inputId: string, value: number) {
+    if (!spec) return;
     setCtx((c) => {
+      if (!c) return c;
       const cur = c.scoring[scoringId];
       const values = { ...cur.values, [inputId]: value };
       const next: ModuleContext = {
@@ -114,14 +150,15 @@ export function ModuleRenderer({
     });
   }
   function toggleDxPrimary(icd10Code: string) {
+    if (!spec) return;
     setCtx((c) => {
+      if (!c) return c;
       const exists = c.diagnoses.find((d) => d.icd10Code === icd10Code);
       const meta = spec.diagnoses.find((d) => d.icd10Code === icd10Code);
       if (exists) {
         return {
           ...c,
-          diagnoses: c.diagnoses
-            .filter((d) => d.icd10Code !== icd10Code),
+          diagnoses: c.diagnoses.filter((d) => d.icd10Code !== icd10Code),
         };
       }
       return {
@@ -139,6 +176,7 @@ export function ModuleRenderer({
   }
 
   function applyToVisit() {
+    if (!spec || !ctx) return;
     setError(null);
     const snapshot = buildSnapshot(spec, ctx);
     startTransition(async () => {
@@ -151,11 +189,12 @@ export function ModuleRenderer({
     });
   }
 
-  const primaryDx = ctx.diagnoses.find((d) => d.primary);
+  const primaryDx = ctx?.diagnoses.find((d) => d.primary);
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
-      {/* Header strip */}
+      {/* Header strip — pakai listing (plain JSON) supaya kelihatan duluan
+          sebelum spec selesai loading. */}
       <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border/60 bg-card/50 px-4 py-3 md:px-6">
         <div className="flex items-center gap-3 min-w-0">
           <button
@@ -169,15 +208,15 @@ export function ModuleRenderer({
           </button>
           <div className="min-w-0">
             <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              {spec.subspecialty} · Modul Klinis
+              {listing.subspecialty} · Modul Klinis
             </p>
             <h1 className="font-display text-xl font-medium leading-tight md:text-2xl break-words">
-              {spec.title}
+              {listing.title}
             </h1>
           </div>
         </div>
         <div className="hidden md:flex shrink-0 items-center gap-2">
-          {spec.tags?.map((t) => (
+          {listing.tags?.map((t) => (
             <span
               key={t}
               className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
@@ -188,6 +227,22 @@ export function ModuleRenderer({
         </div>
       </div>
 
+      {/* Loading state — spec masih di-fetch client-side */}
+      {specLoading || !spec || !ctx ? (
+        <div className="flex flex-1 items-center justify-center px-4 py-10">
+          {specLoading ? (
+            <div className="flex items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 px-6 py-8 text-sm text-muted-foreground">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" aria-hidden />
+              Memuat modul…
+            </div>
+          ) : (
+            <div className="rounded-lg border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+              Gagal memuat modul. Coba kembali ke halaman kunjungan.
+            </div>
+          )}
+        </div>
+      ) : (
+      <>
       {/* Emergency banner — full width, hard alert stays on top */}
       {emergency ? <EmergencyBanner em={emergency} /> : null}
 
@@ -458,6 +513,8 @@ export function ModuleRenderer({
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
