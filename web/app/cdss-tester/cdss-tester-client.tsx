@@ -104,8 +104,8 @@ export function CdssTesterClient({ listings }: Props) {
     };
   }, [moduleId]);
 
-  const ctx: ModuleContext = useMemo(() => {
-    if (!spec) return emptyContext({} as ModuleSpec);
+  const ctx: ModuleContext | null = useMemo(() => {
+    if (!spec) return null;
     return ctxByModule[spec.id] ?? emptyContext(spec);
   }, [spec, ctxByModule]);
 
@@ -129,7 +129,7 @@ export function CdssTesterClient({ listings }: Props) {
   }
 
   const suggestions = useMemo<CdssSuggestion[]>(() => {
-    if (!spec) return [];
+    if (!spec || !ctx) return [];
     const out: CdssSuggestion[] = [];
     for (const rule of spec.cdssRules ?? []) {
       try {
@@ -143,7 +143,7 @@ export function CdssTesterClient({ listings }: Props) {
   }, [spec, ctx]);
 
   const activeEmergency = useMemo<EmergencyTrigger | null>(() => {
-    if (!spec) return null;
+    if (!spec || !ctx) return null;
     for (const trig of spec.emergencyTriggers ?? []) {
       try {
         if (trig.trigger(ctx)) return trig;
@@ -155,7 +155,7 @@ export function CdssTesterClient({ listings }: Props) {
   }, [spec, ctx]);
 
   const soap = useMemo(() => {
-    if (!spec) return null;
+    if (!spec || !ctx) return null;
     try {
       return {
         S: spec.soapMapping.subjective(ctx),
@@ -226,7 +226,7 @@ export function CdssTesterClient({ listings }: Props) {
 
         {loading ? (
           <LoadingCard />
-        ) : !spec ? (
+        ) : !spec || !ctx ? (
           <div className="rounded-lg border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
             Gagal memuat modul. Coba pilih modul lain.
           </div>
