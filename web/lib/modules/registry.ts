@@ -27,7 +27,10 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   // Module 6 — BPPV (H81.1) — Dix-Hallpike + Epley
   bppv: async () => (await import("./specs/bppv")).default,
 
-  // Module 7 — Trauma Wajah & Maksilofasial (S02.x) — RED FLAG + imaging
+  // Module 7 — Rinitis Alergi (J30.4) — SFAR + ARIA + monetisasi 5-layer
+  "rinitis-alergi": async () => (await import("./specs/rinitis-alergi")).default,
+
+  // Module 8 — Trauma Wajah & Maksilofasial (S02.x) — RED FLAG + imaging
   // "trauma-wajah": async () => (await import("./specs/trauma-wajah")).default,
 };
 
@@ -93,6 +96,13 @@ export const MODULE_LISTINGS: ModuleListing[] = [
     subspecialty: "Vertigo",
     tags: ["H81.1", "Dix-Hallpike", "Epley"],
     iconName: "rotate-3d",
+  },
+  {
+    id: "rinitis-alergi",
+    title: "Rinitis Alergi",
+    subspecialty: "Hidung & Sinus",
+    tags: ["J30.4", "SFAR", "ARIA", "Patient Entry"],
+    iconName: "flower-2",
   },
   {
     id: "trauma-wajah",

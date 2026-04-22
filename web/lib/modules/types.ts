@@ -228,6 +228,71 @@ export type EmergencyTrigger = {
 };
 
 // ============================================================================
+// Patient-facing screening (RME → Patient Entry System)
+// ============================================================================
+// Pasien isi mandiri sebelum konsultasi (mis. SFAR untuk Rinitis Alergi).
+// Hasil → diarahkan ke klinik THT dengan pre-screened context.
+
+export type PatientScreeningInputYesNo = {
+  type: "yesNo";
+  id: string;
+  label: string;
+  weightYes?: number;
+};
+export type PatientScreeningInputScale = {
+  type: "scale";
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+  step?: number;
+  default?: number;
+};
+export type PatientScreeningInput =
+  | PatientScreeningInputYesNo
+  | PatientScreeningInputScale;
+
+export type PatientScreeningTier = {
+  threshold: number; // total score >= threshold → tier ini fires
+  label: string; // "Sangat mungkin", "Mungkin", "Kecil kemungkinan"
+  recommendation: string; // CTA yang ditampilkan ke pasien
+};
+
+export type PatientFacingScreening = {
+  id: string;
+  name: string;
+  description: string;
+  reference?: { label: string; url?: string };
+  inputs: PatientScreeningInput[];
+  /** Tiers ordered descending by threshold. First match wins. */
+  tiers: PatientScreeningTier[];
+  /** Optional override for default sum-of-weighted-yes behaviour. */
+  compute?: (values: Record<string, number>) => number;
+};
+
+// ============================================================================
+// Monetization layers (per-disease module revenue streams)
+// ============================================================================
+
+export type MonetizationLayerType =
+  | "platform-fee"
+  | "otc-referral"
+  | "lab-referral"
+  | "telekonsul"
+  | "edukasi-pdf";
+
+export type MonetizationLayer = {
+  id: string;
+  type: MonetizationLayerType;
+  label: string;
+  /** Price in IDR (for platform-fee, edukasi-pdf, telekonsul). */
+  priceIdr?: number;
+  /** Partner type/name (for otc-referral, lab-referral). */
+  partner?: string;
+  description?: string;
+};
+
+// ============================================================================
 // Top-level ModuleSpec
 // ============================================================================
 
@@ -252,6 +317,10 @@ export type ModuleSpec = {
   soapMapping: SoapMapping;
   /** Free-form references (PERHATI-KL, EPOS, AAO-HNS) for footer. */
   references?: { label: string; url?: string }[];
+  /** Optional patient-facing screening (e.g. SFAR) untuk RME→Patient Entry surface. */
+  patientFacingScreening?: PatientFacingScreening;
+  /** Optional monetization layers — multi-layer revenue per disease module. */
+  monetization?: MonetizationLayer[];
 };
 
 // ============================================================================
