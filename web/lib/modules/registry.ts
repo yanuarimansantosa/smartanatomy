@@ -22,7 +22,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   "omsk-bahaya": async () => (await import("./specs/omsk-bahaya")).default,
 
   // Module 5 — Foreign Body Airway (T17) — EMERGENCY MODE
-  // "fb-airway": async () => (await import("./specs/fb-airway")).default,
+  "fb-airway": async () => (await import("./specs/fb-airway")).default,
 
   // Module 6 — BPPV (H81.1) — Dix-Hallpike + Epley
   // bppv: async () => (await import("./specs/bppv")).default,
