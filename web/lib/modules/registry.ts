@@ -25,7 +25,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   "fb-airway": async () => (await import("./specs/fb-airway")).default,
 
   // Module 6 — BPPV (H81.1) — Dix-Hallpike + Epley
-  // bppv: async () => (await import("./specs/bppv")).default,
+  bppv: async () => (await import("./specs/bppv")).default,
 
   // Module 7 — Trauma Wajah & Maksilofasial (S02.x) — RED FLAG + imaging
   // "trauma-wajah": async () => (await import("./specs/trauma-wajah")).default,
