@@ -148,15 +148,14 @@ export default async function VisitViewerPage({
                   </span>
                 </span>
               </p>
-              <button
-                type="button"
-                disabled
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/30 bg-background/60 px-3 text-xs font-medium text-success/80"
-                title="Cetak resep — segera"
+              <Link
+                href={`/pasien/${p.id}/kunjungan/${v.id}/cetak`}
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/40 bg-background px-3 text-xs font-medium text-success transition-colors hover:bg-success/10"
+                title="Cetak resep"
               >
                 <Printer className="h-3.5 w-3.5" />
-                Cetak (segera)
-              </button>
+                Cetak resep
+              </Link>
             </div>
           ) : null}
 
