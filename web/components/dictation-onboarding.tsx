@@ -105,7 +105,7 @@ export function DictationOnboarding() {
                   </li>
                   <li>Mulai bicara — teks otomatis muncul.</li>
                 </ol>
-                <p className="mt-2 rounded-md bg-emerald-50 px-3 py-2 text-xs text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300">
+                <p className="mt-2 rounded-md bg-success/10 px-3 py-2 text-xs text-success">
                   <Check className="mr-1 inline h-3 w-3" />
                   Privasi: di iPad modern (A12+), dictation diproses
                   on-device. Audio tidak keluar perangkat.
@@ -144,7 +144,7 @@ export function DictationOnboarding() {
                     — audio diproses di tablet, tidak ke server.
                   </li>
                 </ol>
-                <div className="mt-2 grid grid-cols-1 gap-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900 sm:grid-cols-[auto_1fr] dark:bg-amber-950/30 dark:text-amber-300">
+                <div className="mt-2 grid grid-cols-1 gap-2 rounded-md bg-warning/10 px-3 py-2 text-xs text-warning sm:grid-cols-[auto_1fr]">
                   <Settings className="h-3.5 w-3.5 shrink-0" />
                   <span>
                     Untuk Samsung Galaxy Tab: Settings → General management →

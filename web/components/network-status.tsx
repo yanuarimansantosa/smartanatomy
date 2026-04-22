@@ -22,12 +22,9 @@ export function NetworkStatus() {
   }, []);
 
   const styles: Record<Status, string> = {
-    online:
-      "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
-    offline:
-      "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
-    syncing:
-      "bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/20",
+    online: "bg-success/10 text-success border-success/20",
+    offline: "bg-warning/10 text-warning border-warning/20",
+    syncing: "bg-info/10 text-info border-info/20",
   };
 
   const label: Record<Status, string> = {

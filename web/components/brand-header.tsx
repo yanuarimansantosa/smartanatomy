@@ -800,7 +800,7 @@ function TierBadge({ tier }: { tier: BrandTier }) {
       </span>
     );
   return (
-    <span className="inline-flex items-center gap-1 rounded bg-amber-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+    <span className="inline-flex items-center gap-1 rounded bg-warning/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-warning">
       <Crown className="h-2.5 w-2.5" />
       Gold
     </span>

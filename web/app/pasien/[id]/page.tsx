@@ -187,13 +187,13 @@ export default async function PasienDetailPage({
                     const st = statusLabel(v.status);
                     const tone =
                       st.tone === "amber"
-                        ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
+                        ? "bg-warning/15 text-warning"
                         : st.tone === "blue"
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                          ? "bg-info/15 text-info"
                           : st.tone === "indigo"
-                            ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                            ? "bg-info/15 text-info"
                             : st.tone === "green"
-                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                              ? "bg-success/15 text-success"
                               : "bg-muted text-muted-foreground";
                     const isSigned = !!v.signedAt;
                     const href = isSigned

@@ -555,7 +555,7 @@ export function SoapEditor({
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-6 py-3 backdrop-blur md:px-10">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
             <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <CheckCircle2 className="h-4 w-4 text-success" />
               Kunjungan sudah ditandatangani — read-only.
             </p>
             <a
@@ -903,7 +903,7 @@ function Icd9PickerInline({
               <span
                 className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
                   r.isOperative
-                    ? "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400"
+                    ? "bg-warning/15 text-warning"
                     : "bg-muted text-muted-foreground"
                 }`}
               >
@@ -956,7 +956,7 @@ function ProceduresList({
                 </span>
                 <span className="text-sm">{t.icd9NameId}</span>
                 {t.isOperative ? (
-                  <span className="rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-amber-700 dark:bg-amber-950/50 dark:text-amber-400">
+                  <span className="rounded-md bg-warning/15 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-warning">
                     Operatif
                   </span>
                 ) : null}

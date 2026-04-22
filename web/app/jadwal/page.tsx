@@ -175,13 +175,13 @@ function VisitCard({ row, highlight }: { row: Row; highlight?: boolean }) {
   const status = statusLabel(v.status);
   const toneClass =
     status.tone === "amber"
-      ? "border-amber-300/60 bg-amber-50/60 text-amber-800 dark:border-amber-800/40 dark:bg-amber-900/10 dark:text-amber-300"
+      ? "border-warning/30 bg-warning/10 text-warning"
       : status.tone === "blue"
-        ? "border-blue-300/60 bg-blue-50/60 text-blue-800 dark:border-blue-800/40 dark:bg-blue-900/10 dark:text-blue-300"
+        ? "border-info/30 bg-info/10 text-info"
         : status.tone === "indigo"
-          ? "border-indigo-300/60 bg-indigo-50/60 text-indigo-800 dark:border-indigo-800/40 dark:bg-indigo-900/10 dark:text-indigo-300"
+          ? "border-info/30 bg-info/10 text-info"
           : status.tone === "green"
-            ? "border-emerald-300/60 bg-emerald-50/60 text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-900/10 dark:text-emerald-300"
+            ? "border-success/30 bg-success/10 text-success"
             : "border-border bg-muted text-muted-foreground";
 
   const href = v.patientId

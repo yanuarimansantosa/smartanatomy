@@ -28,6 +28,12 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -47,6 +53,36 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ==========================================================================
+   Semantic STATUS tokens (success / warning / info)
+   Inherited by ALL themes unless overridden in dark variants below.
+   Reason: status colors are semantic UX (success = green, warning = amber)
+   and should stay legible across every brand palette. Pages that previously
+   hardcoded `bg-emerald-500/10 text-emerald-700` should use `bg-success/10
+   text-success` so the color survives a future palette swap.
+   ========================================================================== */
+:root {
+  --success: #16A34A;
+  --success-foreground: #FFFFFF;
+  --warning: #D97706;
+  --warning-foreground: #FFFFFF;
+  --info: #2563EB;
+  --info-foreground: #FFFFFF;
+}
+
+/* Dark-mode-by-default themes get lighter, lifted status tokens for AA contrast. */
+.theme-criticalcare,
+.theme-insightcare,
+.theme-lifecare,
+.theme-internasional.dark {
+  --success: #4ADE80;
+  --success-foreground: #052E16;
+  --warning: #FBBF24;
+  --warning-foreground: #422006;
+  --info: #60A5FA;
+  --info-foreground: #0B1B33;
 }
 
 /* ==========================================================================

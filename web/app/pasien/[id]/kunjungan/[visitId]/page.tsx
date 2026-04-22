@@ -135,7 +135,7 @@ export default async function VisitViewerPage({
 
           {/* ---------- Signed banner ---------- */}
           {signed && v.signedAt ? (
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200">
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
               <p className="inline-flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
                 <span>
@@ -151,7 +151,7 @@ export default async function VisitViewerPage({
               <button
                 type="button"
                 disabled
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-emerald-300/60 bg-background/60 px-3 text-xs font-medium text-emerald-900/70 dark:border-emerald-800/60 dark:text-emerald-200/60"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/30 bg-background/60 px-3 text-xs font-medium text-success/80"
                 title="Cetak resep — segera"
               >
                 <Printer className="h-3.5 w-3.5" />
@@ -386,8 +386,8 @@ function DiagnosesList({ items }: { items: VisitDiagnosisRow[] }) {
           d.diagnosisType === "primary"
             ? "bg-primary/10 text-primary"
             : d.diagnosisType === "secondary"
-              ? "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-              : "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300";
+              ? "bg-info/15 text-info"
+              : "bg-warning/15 text-warning";
         return (
           <li key={d.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-3 py-2.5">
             <span className="font-mono text-xs tabular-nums text-foreground/80">
@@ -435,7 +435,7 @@ function ProceduresList({
               <span
                 className={`rounded-md px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
                   t.isOperative
-                    ? "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300"
+                    ? "bg-destructive/15 text-destructive"
                     : "bg-muted text-muted-foreground"
                 }`}
               >

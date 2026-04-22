@@ -560,7 +560,7 @@ function ScoringCard({
                 tone.tone === "danger"
                   ? "bg-destructive/15 text-destructive"
                   : tone.tone === "warn"
-                    ? "bg-amber-500/15 text-amber-700 dark:text-amber-400"
+                    ? "bg-warning/15 text-warning"
                     : tone.tone === "info"
                       ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground"
@@ -695,22 +695,22 @@ function CategoryChip({
   const map: Record<typeof category, { label: string; cls: string; Icon: React.ComponentType<{ className?: string }> }> = {
     medikamentosa: {
       label: "Medikamentosa",
-      cls: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+      cls: "bg-info/10 text-info",
       Icon: Pill,
     },
     tindakan: {
       label: "Tindakan",
-      cls: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
+      cls: "bg-warning/10 text-warning",
       Icon: Scissors,
     },
     edukasi: {
       label: "Edukasi",
-      cls: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+      cls: "bg-success/10 text-success",
       Icon: BookOpen,
     },
     rujukan: {
       label: "Rujukan",
-      cls: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
+      cls: "bg-accent/15 text-accent",
       Icon: ExternalLink,
     },
   };
@@ -734,7 +734,7 @@ function EmergencyBanner({
   const cls =
     em.level === "red"
       ? "bg-destructive text-destructive-foreground"
-      : "bg-amber-500 text-white";
+      : "bg-warning text-warning-foreground";
   return (
     <div className={`shrink-0 px-4 py-3 md:px-6 ${cls}`}>
       <div className="mx-auto flex max-w-6xl items-start gap-3">
@@ -756,11 +756,11 @@ function SuggestionBanner({ s }: { s: CdssSuggestion }) {
     info: { Icon: Info, cls: "border-primary/40 bg-primary/5 text-primary" },
     success: {
       Icon: CheckCircle2,
-      cls: "border-emerald-500/40 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400",
+      cls: "border-success/40 bg-success/5 text-success",
     },
     warn: {
       Icon: AlertTriangle,
-      cls: "border-amber-500/40 bg-amber-500/5 text-amber-700 dark:text-amber-400",
+      cls: "border-warning/40 bg-warning/5 text-warning",
     },
     danger: {
       Icon: AlertOctagon,
