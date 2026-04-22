@@ -88,6 +88,131 @@ export const ROADMAP: RoadmapCategory[] = [
   },
 
   {
+    key: "clinical-engine",
+    title: "Clinical Flow Engine (PRD v2.0)",
+    subtitle:
+      "Engine-primary modul klinis · CDSS · auto-compose SOAP · cetak resep · zero-typing target",
+    items: [
+      {
+        id: "engine-core",
+        title: "Module engine foundation (10-section ModuleSpec + renderer)",
+        detail: "Generic engine yang ditumpangi semua modul.",
+        expectedTag: "v0.16.0-module-engine",
+      },
+      {
+        id: "mod-tonsilitis",
+        title: "Module 1 — Tonsilitis Kronik (J35.0) · Brodsky · STOP-BANG",
+        expectedTag: "v0.16.1-module-tonsilitis",
+      },
+      {
+        id: "mod-crs",
+        title: "Module 2 — Rinosinusitis Kronik (J32) · SNOT-22 · EPOS",
+        expectedTag: "v0.16.2-module-crs",
+      },
+      {
+        id: "mod-omsk-aman",
+        title: "Module 3 — OMSK Tipe Aman (H66.1)",
+        expectedTag: "v0.16.3-module-omsk-aman",
+      },
+      {
+        id: "mod-omsk-bahaya",
+        title: "Module 4 — OMSK Tipe Bahaya (H66.2) + komplikasi panel",
+        expectedTag: "v0.16.4-module-omsk-bahaya",
+      },
+      {
+        id: "mod-fb-airway",
+        title: "Module 5 — Foreign Body Airway (T17) · EMERGENCY",
+        expectedTag: "v0.16.5-module-fb-airway",
+      },
+      {
+        id: "mod-bppv",
+        title: "Module 6 — BPPV (H81.1) · Dix-Hallpike · Epley",
+        expectedTag: "v0.16.6-module-bppv",
+      },
+      {
+        id: "mod-rinitis-alergi",
+        title:
+          "Module 7 — Rinitis Alergi (J30.4) · SFAR · ARIA · monetisasi 5-layer",
+        expectedTag: "v0.16.7-module-rinitis-alergi",
+      },
+      {
+        id: "mod-trauma-wajah",
+        title: "Module 8 — Trauma Wajah & Maksilofasial (S02.x) · RED FLAG",
+        expectedTag: "v0.16.8-module-trauma-wajah",
+      },
+      {
+        id: "mod-knf",
+        title: "Module 9 — KNF (C11) · RED FLAG-driven early detection",
+        expectedTag: "v0.16.9-module-knf",
+      },
+      {
+        id: "mod-tuli-kongenital",
+        title:
+          "Module 10 — Tuli Kongenital (H90.x) · JCIH 1-3-6 golden period",
+        expectedTag: "v0.16.11-module-tuli-kongenital",
+      },
+      {
+        id: "mod-serumen-impaksi",
+        title: "Module 11 — Serumen Impaksi (H61.2) · high-volume cashflow",
+        expectedTag: "v0.16.14-module-serumen-impaksi",
+      },
+      {
+        id: "mod-uao",
+        title: "Module 12 — Upper Airway Obstruction (J98/J05.1) · EMERGENCY",
+        detail: "Belum dibuat — next emergency module setelah FB Airway.",
+      },
+      {
+        id: "theme-semantic",
+        title: "Theme semantic tokens (risk/warning/success) untuk engine",
+        expectedTag: "v0.16.10-theme-semantic-tokens",
+      },
+      {
+        id: "cdss-tester",
+        title: "CDSS Tester standalone + loading state + null-safe ctx",
+        expectedTag: /v0\.16\.(12|13|15)/,
+      },
+      {
+        id: "universal-search",
+        title: "Universal Search Stage 1 — palette (menu · pasien · ICD · modul)",
+        expectedTag: "v0.17.0-universal-search-stage-1",
+      },
+      {
+        id: "ux-yatidak-soap",
+        title:
+          "Pertanyaan tap Ya/Tidak + SOAP sticky kanan (modul + CDSS tester)",
+        expectedTag: /v0\.17\.[12]/,
+      },
+      {
+        id: "next16-boundary-fix",
+        title: "Next 16 server→client boundary fix (load spec client-side)",
+        expectedTag: "v0.17.3-modul-page-client-spec-load",
+      },
+      {
+        id: "cetak-resep",
+        title: "Cetak resep MVP (A5 portrait, R/ format, print-ready)",
+        expectedTag: "v0.17.4-cetak-resep-mvp",
+      },
+      {
+        id: "doctor-identity",
+        title: "Doctor identity (nama + SIP) configurable via BrandConfig",
+        expectedTag: "v0.17.5-doctor-identity-config",
+      },
+      {
+        id: "ztci-editor",
+        title:
+          "ZTCI Layer 1 — engine-primary visit editor (tap-only, zero typing)",
+        detail:
+          "Belum dimulai — rewrite editor.tsx jadi engine-first dengan typing cuma escape hatch.",
+      },
+      {
+        id: "uao-emergency",
+        title: "Module 13+ — Emergency modules tambahan (epistaksis, trauma leher)",
+        detail: "Queue setelah UAO.",
+      },
+    ],
+  },
+
+  {
     key: "schema",
     title: "Database Schema (14 tables)",
     subtitle: "PostgreSQL 16 · UUID PK · RLS · tenant_id (per DB Schema v1.0)",
