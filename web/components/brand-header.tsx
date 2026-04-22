@@ -57,6 +57,8 @@ export type BrandConfig = {
   tagline: string;
   logoDataUrl: string;
   hideAttribution: boolean;
+  doctorName: string;
+  doctorSip: string;
   customColors: {
     enabled: boolean;
     primary: string;
@@ -71,6 +73,8 @@ const BRAND_KEY = "salamai.brand";
 const BRAND_EVENT = "salamai:brand-change";
 const MAX_NAME = 60;
 const MAX_TAGLINE = 100;
+const MAX_DOCTOR_NAME = 80;
+const MAX_DOCTOR_SIP = 60;
 const MAX_LOGO_BYTES = 500_000;
 
 const DEFAULT: BrandConfig = {
@@ -78,6 +82,8 @@ const DEFAULT: BrandConfig = {
   tagline: "",
   logoDataUrl: "",
   hideAttribution: false,
+  doctorName: "",
+  doctorSip: "",
   customColors: {
     enabled: false,
     primary: "#0E7C7B",
@@ -101,6 +107,8 @@ function readBrand(): BrandConfig {
       tagline: (p.tagline ?? "").slice(0, MAX_TAGLINE),
       logoDataUrl: p.logoDataUrl ?? "",
       hideAttribution: !!p.hideAttribution,
+      doctorName: (p.doctorName ?? "").slice(0, MAX_DOCTOR_NAME),
+      doctorSip: (p.doctorSip ?? "").slice(0, MAX_DOCTOR_SIP),
       customColors: {
         enabled: !!p.customColors?.enabled,
         primary: p.customColors?.primary || DEFAULT.customColors.primary,
@@ -507,6 +515,40 @@ function BrandEditPanel({
               placeholder="cth. Klinik THT-KL Yanuar"
               className="w-full rounded-md border bg-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
             />
+          </Field>
+        </Section>
+
+        <Section title="Dokter penanggung jawab" tier="pro">
+          <Field label="Nama & gelar">
+            <input
+              type="text"
+              value={draft.doctorName}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  doctorName: e.target.value.slice(0, MAX_DOCTOR_NAME),
+                }))
+              }
+              placeholder="cth. dr. Yanuar Iman Santosa, Sp.THT-KL Subsp.A.I."
+              className="w-full rounded-md border bg-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </Field>
+          <Field label="Nomor SIP">
+            <input
+              type="text"
+              value={draft.doctorSip}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  doctorSip: e.target.value.slice(0, MAX_DOCTOR_SIP),
+                }))
+              }
+              placeholder="cth. SIP: 503/1234/DINKES/2026"
+              className="w-full rounded-md border bg-background px-2.5 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+            />
+            <div className="mt-1 text-[10px] text-muted-foreground">
+              Tampil di resep cetak &amp; kop surat. Kosong = fallback default.
+            </div>
           </Field>
         </Section>
 

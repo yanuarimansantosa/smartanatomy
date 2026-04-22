@@ -44,10 +44,9 @@ type DiagnosisJson = {
   primary: boolean;
 };
 
-// MVP single-tenant: dokter identity di-hardcode.
-// Saat multi-tenant tiba, ambil dari user/tenant config.
-const DOCTOR_NAME = "dr. Yanuar Iman Santosa, Sp.THT-KL Subsp.A.I.";
-const DOCTOR_SIP = "SIP: ____________________";
+// Fallback dokter identity kalau brand config belum diisi.
+const FALLBACK_DOCTOR_NAME = "dr. Yanuar Iman Santosa, Sp.THT-KL Subsp.A.I.";
+const FALLBACK_DOCTOR_SIP = "SIP: ____________________";
 
 export function CetakResepClient({
   patient,
@@ -61,9 +60,18 @@ export function CetakResepClient({
   diagnoses: DiagnosisJson[];
 }) {
   const { brand, hydrated } = useBrand();
-  const clinicName = hydrated && brand.clinicName ? brand.clinicName : "Klinik THT-KL";
+  const clinicName =
+    hydrated && brand.clinicName ? brand.clinicName : "Klinik THT-KL";
   const clinicTagline = hydrated ? brand.tagline : "";
   const logoUrl = hydrated ? brand.logoDataUrl : "";
+  const doctorName =
+    hydrated && brand.doctorName.trim().length > 0
+      ? brand.doctorName
+      : FALLBACK_DOCTOR_NAME;
+  const doctorSip =
+    hydrated && brand.doctorSip.trim().length > 0
+      ? brand.doctorSip
+      : FALLBACK_DOCTOR_SIP;
 
   const handlePrint = useCallback(() => {
     window.print();
@@ -120,9 +128,9 @@ export function CetakResepClient({
                 </p>
               ) : null}
               <p className="mt-2 text-sm font-medium text-foreground">
-                {DOCTOR_NAME}
+                {doctorName}
               </p>
-              <p className="text-xs text-muted-foreground">{DOCTOR_SIP}</p>
+              <p className="text-xs text-muted-foreground">{doctorSip}</p>
             </div>
             <div className="shrink-0 text-right text-xs text-muted-foreground">
               <div>Semarang,</div>
@@ -186,8 +194,8 @@ export function CetakResepClient({
             <div className="w-60 text-center">
               <p className="text-xs text-muted-foreground">Hormat kami,</p>
               <div className="mt-14 border-b border-foreground/60" />
-              <p className="mt-1 text-sm font-medium">{DOCTOR_NAME}</p>
-              <p className="text-xs text-muted-foreground">{DOCTOR_SIP}</p>
+              <p className="mt-1 text-sm font-medium">{doctorName}</p>
+              <p className="text-xs text-muted-foreground">{doctorSip}</p>
             </div>
           </footer>
 
