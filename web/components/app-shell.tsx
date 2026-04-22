@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  BookOpenCheck,
+  BrainCog,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -11,6 +13,7 @@ import {
   Info,
   Menu,
   ScrollText,
+  Scissors,
   Settings,
   Users,
   X,
@@ -45,6 +48,12 @@ const PRIMARY: NavItem[] = [
     disabled: true,
     hint: "Segera",
   },
+];
+
+const KODIFIKASI: NavItem[] = [
+  { label: "ICD-10", href: "/icd-10", Icon: BookOpenCheck },
+  { label: "ICD-9-CM", href: "/icd-9", Icon: Scissors },
+  { label: "CDSS Tester", href: "/cdss-tester", Icon: BrainCog },
 ];
 
 const SECONDARY: NavItem[] = [
@@ -144,6 +153,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </li>
             ))}
           </ul>
+
+          <div className="mt-6">
+            <SidebarSectionHeader label="Kodifikasi" collapsed={collapsed} />
+            <ul className="mt-1 space-y-0.5">
+              {KODIFIKASI.map((it) => (
+                <li key={it.href}>
+                  <NavLink item={it} active={isActive(pathname, it.href)} collapsed={collapsed} />
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="mt-6">
             <SidebarSectionHeader label="Lainnya" collapsed={collapsed} />
