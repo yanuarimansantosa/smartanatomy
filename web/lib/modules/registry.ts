@@ -13,7 +13,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   tonsilitis: async () => (await import("./specs/tonsilitis")).default,
 
   // Module 2 — Rinosinusitis Kronik (J32) — SNOT-22 + EPOS
-  // crs: async () => (await import("./specs/crs")).default,
+  crs: async () => (await import("./specs/crs")).default,
 
   // Module 3 — OMSK aman (H66.1)
   // "omsk-aman": async () => (await import("./specs/omsk-aman")).default,
