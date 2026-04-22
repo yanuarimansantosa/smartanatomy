@@ -35,6 +35,9 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
 
   // Module 9 — KNF (C11) — RED FLAG-DRIVEN early detection
   knf: async () => (await import("./specs/knf")).default,
+
+  // Module 10 — Tuli Kongenital (H90.x) — JCIH 1-3-6 golden period
+  "tuli-kongenital": async () => (await import("./specs/tuli-kongenital")).default,
 };
 
 export type ModuleListing = {
@@ -120,6 +123,13 @@ export const MODULE_LISTINGS: ModuleListing[] = [
     subspecialty: "Onkologi THT",
     tags: ["C11", "RED FLAG", "Early Detection", "EBV"],
     iconName: "scan-search",
+  },
+  {
+    id: "tuli-kongenital",
+    title: "Tuli Kongenital",
+    subspecialty: "Telinga / Pediatrik",
+    tags: ["H90.x", "JCIH 1-3-6", "OAE/AABR", "Golden Period"],
+    iconName: "baby",
   },
 ];
 
