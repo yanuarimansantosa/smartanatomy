@@ -1,5 +1,5 @@
 import { BrainCog, Lightbulb } from "lucide-react";
-import { loadAllSpecs } from "@/lib/modules/catalog";
+import { MODULE_LISTINGS } from "@/lib/modules/registry";
 import { CdssTesterClient } from "./cdss-tester-client";
 
 export const dynamic = "force-dynamic";
@@ -10,19 +10,12 @@ export const metadata = {
     "Uji Clinical Decision Support System tanpa data pasien. Pilih modul, tap gejala/temuan, lihat aturan CDSS menyala + kompos SOAP.",
 };
 
-export default async function CdssTesterPage() {
-  const specs = await loadAllSpecs();
-
-  const specsLite = specs.map((s) => ({
-    id: s.id,
-    title: s.title,
-    subspecialty: s.subspecialty,
-    tags: s.tags,
-    emergencyCount: s.emergencyTriggers?.length ?? 0,
-    cdssCount: s.cdssRules?.length ?? 0,
-    scoringCount: s.scoring?.length ?? 0,
-    diagnosisCount: s.diagnoses.length,
-    treatmentCount: s.treatments.length,
+export default function CdssTesterPage() {
+  const listings = MODULE_LISTINGS.map((m) => ({
+    id: m.id,
+    title: m.title,
+    subspecialty: m.subspecialty,
+    tags: m.tags ?? [],
   }));
 
   return (
@@ -45,21 +38,13 @@ export default async function CdssTesterPage() {
         <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
           <BrainCog className="h-4 w-4 text-primary" />
           <span>
-            <strong className="font-semibold text-foreground">{specsLite.length}</strong> modul{" "}
-            &middot;{" "}
-            <strong className="font-semibold text-foreground">
-              {specsLite.reduce((sum, s) => sum + s.cdssCount, 0)}
-            </strong>{" "}
-            CDSS rule &middot;{" "}
-            <strong className="font-semibold text-foreground">
-              {specsLite.reduce((sum, s) => sum + s.emergencyCount, 0)}
-            </strong>{" "}
-            emergency trigger
+            <strong className="font-semibold text-foreground">{listings.length}</strong> modul
+            terdaftar
           </span>
         </div>
       </header>
 
-      <CdssTesterClient specs={specs} />
+      <CdssTesterClient listings={listings} />
 
       <footer className="mt-8 rounded-lg border border-dashed border-border bg-muted/30 p-4 text-xs text-muted-foreground">
         <div className="flex items-start gap-2">
@@ -71,39 +56,6 @@ export default async function CdssTesterPage() {
           </p>
         </div>
       </footer>
-
-      <section className="mt-6">
-        <h2 className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Ringkasan per modul
-        </h2>
-        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {specsLite
-            .slice()
-            .sort((a, b) => a.title.localeCompare(b.title))
-            .map((s) => (
-              <li
-                key={s.id}
-                className="rounded-lg border border-border bg-card p-3 text-xs"
-              >
-                <div className="mb-1 flex items-center justify-between gap-2">
-                  <span className="truncate font-medium text-foreground">{s.title}</span>
-                  {s.emergencyCount > 0 ? (
-                    <span className="shrink-0 rounded bg-destructive/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-destructive">
-                      Emergency
-                    </span>
-                  ) : null}
-                </div>
-                <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-muted-foreground">
-                  <span>{s.cdssCount} CDSS</span>
-                  <span>{s.scoringCount} scoring</span>
-                  <span>{s.diagnosisCount} dx</span>
-                  <span>{s.treatmentCount} tx</span>
-                </div>
-              </li>
-            ))}
-        </ul>
-      </section>
     </main>
   );
 }
-

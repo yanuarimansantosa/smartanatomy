@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   CheckCircle2,
   CircleAlert,
   Info,
+  Loader2,
   RotateCcw,
   Siren,
   Sparkles,
 } from "lucide-react";
+import { getModuleSpec } from "@/lib/modules/registry";
 import {
   emptyContext,
   type CdssSuggestion,
@@ -19,8 +21,15 @@ import {
   type TapItem,
 } from "@/lib/modules/types";
 
+type Listing = {
+  id: string;
+  title: string;
+  subspecialty: string;
+  tags: string[];
+};
+
 type Props = {
-  specs: ModuleSpec[];
+  listings: Listing[];
 };
 
 const LEVEL_STYLE: Record<
@@ -50,26 +59,50 @@ const LEVEL_STYLE: Record<
   },
 };
 
-function pickInitialId(specs: ModuleSpec[]): string {
+function pickInitialId(listings: Listing[]): string {
   if (typeof window !== "undefined") {
     const url = new URL(window.location.href);
     const fromUrl = url.searchParams.get("module");
-    if (fromUrl && specs.some((s) => s.id === fromUrl)) return fromUrl;
+    if (fromUrl && listings.some((l) => l.id === fromUrl)) return fromUrl;
   }
-  return specs[0]?.id ?? "";
+  return listings[0]?.id ?? "";
 }
 
-export function CdssTesterClient({ specs }: Props) {
-  const [moduleId, setModuleId] = useState<string>(() => specs[0]?.id ?? "");
+export function CdssTesterClient({ listings }: Props) {
+  const [moduleId, setModuleId] = useState<string>("");
+  const [spec, setSpec] = useState<ModuleSpec | null>(null);
+  const [loading, setLoading] = useState(true);
   const [ctxByModule, setCtxByModule] = useState<Record<string, ModuleContext>>({});
 
-  // Sync module selection to URL query (for deep links from ICD browsers).
+  // Pick initial module (query ?module=xxx if valid).
   useEffect(() => {
-    const initial = pickInitialId(specs);
-    if (initial) setModuleId(initial);
-  }, [specs]);
+    setModuleId(pickInitialId(listings));
+  }, [listings]);
 
-  const spec = useMemo(() => specs.find((s) => s.id === moduleId) ?? null, [specs, moduleId]);
+  // Load spec whenever module changes.
+  useEffect(() => {
+    let cancelled = false;
+    if (!moduleId) {
+      setSpec(null);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    getModuleSpec(moduleId)
+      .then((s) => {
+        if (cancelled) return;
+        setSpec(s);
+      })
+      .catch(() => {
+        if (!cancelled) setSpec(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [moduleId]);
 
   const ctx: ModuleContext = useMemo(() => {
     if (!spec) return emptyContext({} as ModuleSpec);
@@ -103,7 +136,7 @@ export function CdssTesterClient({ specs }: Props) {
         const s = rule.evaluate(ctx);
         if (s) out.push(s);
       } catch {
-        // Silently skip broken rules in the tester sandbox.
+        /* skip broken rules */
       }
     }
     return out;
@@ -135,7 +168,7 @@ export function CdssTesterClient({ specs }: Props) {
     }
   }, [spec, ctx]);
 
-  if (!spec) {
+  if (listings.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-muted/20 p-8 text-center">
         <p className="text-sm font-medium text-foreground">Belum ada modul terdaftar</p>
@@ -146,13 +179,10 @@ export function CdssTesterClient({ specs }: Props) {
     );
   }
 
-  const anamnesisAbnormal = spec.anamnesis.items.filter((i) => ctx.anamnesis[i.id]).length;
-  const examAbnormal = spec.examination.items.filter((i) => ctx.examination[i.id]).length;
-
+  // Module picker is always shown, even while loading.
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
       <div className="space-y-4">
-        {/* Module picker */}
         <section className="rounded-lg border border-border bg-card p-3">
           <div className="flex flex-wrap items-center gap-2">
             <label htmlFor="cdss-module" className="text-xs font-medium text-muted-foreground">
@@ -164,22 +194,23 @@ export function CdssTesterClient({ specs }: Props) {
               onChange={(e) => setModuleId(e.target.value)}
               className="h-10 flex-1 min-w-[14rem] rounded-lg border border-border bg-background px-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30"
             >
-              {specs.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.title} &mdash; {s.subspecialty}
+              {listings.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.title} &mdash; {l.subspecialty}
                 </option>
               ))}
             </select>
             <button
               type="button"
               onClick={resetAll}
-              className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              disabled={!spec}
+              className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             >
               <RotateCcw className="h-4 w-4" aria-hidden />
               Reset
             </button>
           </div>
-          {spec.tags && spec.tags.length > 0 ? (
+          {spec?.tags && spec.tags.length > 0 ? (
             <div className="mt-2 flex flex-wrap gap-1.5">
               {spec.tags.map((t) => (
                 <span
@@ -193,51 +224,54 @@ export function CdssTesterClient({ specs }: Props) {
           ) : null}
         </section>
 
-        {/* Emergency banner */}
-        {activeEmergency ? (
-          <EmergencyBanner trigger={activeEmergency} />
-        ) : null}
+        {loading ? (
+          <LoadingCard />
+        ) : !spec ? (
+          <div className="rounded-lg border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+            Gagal memuat modul. Coba pilih modul lain.
+          </div>
+        ) : (
+          <>
+            {activeEmergency ? <EmergencyBanner trigger={activeEmergency} /> : null}
 
-        {/* Anamnesis tap */}
-        <TapSection
-          title={spec.anamnesis.title}
-          helper={spec.anamnesis.helper}
-          items={spec.anamnesis.items}
-          values={ctx.anamnesis}
-          onToggle={toggleAnamnesis}
-          summaryCount={anamnesisAbnormal}
-          totalCount={spec.anamnesis.items.length}
-        />
+            <TapSection
+              title={spec.anamnesis.title}
+              helper={spec.anamnesis.helper}
+              items={spec.anamnesis.items}
+              values={ctx.anamnesis}
+              onToggle={toggleAnamnesis}
+              summaryCount={spec.anamnesis.items.filter((i) => ctx.anamnesis[i.id]).length}
+              totalCount={spec.anamnesis.items.length}
+            />
 
-        {/* Examination tap */}
-        <TapSection
-          title={spec.examination.title}
-          helper={spec.examination.helper}
-          items={spec.examination.items}
-          values={ctx.examination}
-          onToggle={toggleExam}
-          summaryCount={examAbnormal}
-          totalCount={spec.examination.items.length}
-        />
+            <TapSection
+              title={spec.examination.title}
+              helper={spec.examination.helper}
+              items={spec.examination.items}
+              values={ctx.examination}
+              onToggle={toggleExam}
+              summaryCount={spec.examination.items.filter((i) => ctx.examination[i.id]).length}
+              totalCount={spec.examination.items.length}
+            />
 
-        {/* SOAP preview */}
-        {soap ? (
-          <section className="rounded-lg border border-border bg-card p-4">
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-              Auto-Compose SOAP
-            </h2>
-            <div className="grid gap-3 text-sm md:grid-cols-2">
-              <SoapCell label="S — Subjective" body={soap.S} />
-              <SoapCell label="O — Objective" body={soap.O} />
-              <SoapCell label="A — Assessment" body={soap.A} />
-              <SoapCell label="P — Plan" body={soap.P} />
-            </div>
-          </section>
-        ) : null}
+            {soap ? (
+              <section className="rounded-lg border border-border bg-card p-4">
+                <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+                  Auto-Compose SOAP
+                </h2>
+                <div className="grid gap-3 text-sm md:grid-cols-2">
+                  <SoapCell label="S — Subjective" body={soap.S} />
+                  <SoapCell label="O — Objective" body={soap.O} />
+                  <SoapCell label="A — Assessment" body={soap.A} />
+                  <SoapCell label="P — Plan" body={soap.P} />
+                </div>
+              </section>
+            ) : null}
+          </>
+        )}
       </div>
 
-      {/* Right rail — CDSS output */}
       <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
         <section className="rounded-lg border border-border bg-card p-3">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -245,13 +279,15 @@ export function CdssTesterClient({ specs }: Props) {
             CDSS Output
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            {suggestions.length > 0
-              ? `${suggestions.length} saran aktif dari ${spec.cdssRules?.length ?? 0} rule.`
-              : `Tidak ada saran aktif. ${spec.cdssRules?.length ?? 0} rule ter-evaluasi.`}
+            {!spec
+              ? "Pilih modul untuk mulai testing."
+              : suggestions.length > 0
+                ? `${suggestions.length} saran aktif dari ${spec.cdssRules?.length ?? 0} rule.`
+                : `Tidak ada saran aktif. ${spec.cdssRules?.length ?? 0} rule ter-evaluasi.`}
           </p>
         </section>
 
-        {suggestions.length === 0 ? (
+        {spec && suggestions.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border bg-muted/20 p-4 text-center text-xs text-muted-foreground">
             <p>Tap anamnesis atau pemeriksaan di kiri untuk melihat CDSS menyala.</p>
           </div>
@@ -263,6 +299,15 @@ export function CdssTesterClient({ specs }: Props) {
           </ul>
         )}
       </aside>
+    </div>
+  );
+}
+
+function LoadingCard() {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-dashed border-border bg-muted/20 p-8 text-sm text-muted-foreground">
+      <Loader2 className="h-5 w-5 animate-spin text-primary" aria-hidden />
+      Memuat modul…
     </div>
   );
 }
