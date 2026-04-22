@@ -165,6 +165,14 @@ export default async function VisitViewerPage({
                   <Printer className="h-3.5 w-3.5" />
                   Surat sakit
                 </Link>
+                <Link
+                  href={`/pasien/${p.id}/kunjungan/${v.id}/surat-rujukan`}
+                  className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/40 bg-background px-3 text-xs font-medium text-success transition-colors hover:bg-success/10"
+                  title="Surat rujukan pasien"
+                >
+                  <Printer className="h-3.5 w-3.5" />
+                  Surat rujukan
+                </Link>
               </div>
             </div>
           ) : null}
