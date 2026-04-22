@@ -253,26 +253,29 @@ export function CdssTesterClient({ listings }: Props) {
               summaryCount={spec.examination.items.filter((i) => ctx.examination[i.id]).length}
               totalCount={spec.examination.items.length}
             />
-
-            {soap ? (
-              <section className="rounded-lg border border-border bg-card p-4">
-                <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-                  Auto-Compose SOAP
-                </h2>
-                <div className="grid gap-3 text-sm md:grid-cols-2">
-                  <SoapCell label="S — Subjective" body={soap.S} />
-                  <SoapCell label="O — Objective" body={soap.O} />
-                  <SoapCell label="A — Assessment" body={soap.A} />
-                  <SoapCell label="P — Plan" body={soap.P} />
-                </div>
-              </section>
-            ) : null}
           </>
         )}
       </div>
 
-      <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start">
+      <aside className="space-y-3 lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+        {soap ? (
+          <section className="rounded-lg border border-primary/30 bg-card p-3 shadow-sm ring-1 ring-primary/10">
+            <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+              Auto-Compose SOAP
+              <span className="ml-auto text-[10px] font-normal uppercase tracking-wider text-muted-foreground">
+                Live
+              </span>
+            </h2>
+            <div className="grid gap-2 text-sm">
+              <SoapCell label="S — Subjective" body={soap.S} />
+              <SoapCell label="O — Objective" body={soap.O} />
+              <SoapCell label="A — Assessment" body={soap.A} />
+              <SoapCell label="P — Plan" body={soap.P} />
+            </div>
+          </section>
+        ) : null}
+
         <section className="rounded-lg border border-border bg-card p-3">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Sparkles className="h-4 w-4 text-primary" aria-hidden />
@@ -289,7 +292,7 @@ export function CdssTesterClient({ listings }: Props) {
 
         {spec && suggestions.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border bg-muted/20 p-4 text-center text-xs text-muted-foreground">
-            <p>Tap anamnesis atau pemeriksaan di kiri untuk melihat CDSS menyala.</p>
+            <p>Tap &ldquo;Ya&rdquo; pada temuan di kiri untuk melihat CDSS menyala.</p>
           </div>
         ) : (
           <ul className="space-y-2">
@@ -334,40 +337,87 @@ function TapSection({
       <header className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-          {helper ? <p className="text-xs text-muted-foreground">{helper}</p> : null}
+          <p className="text-xs text-muted-foreground">
+            {helper ?? "Default semua jawaban Tidak. Tap Ya hanya pada temuan positif."}
+          </p>
         </div>
         <span className="rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-          {summaryCount}/{totalCount} abnormal
+          {summaryCount}/{totalCount} positif
         </span>
       </header>
-      <ul className="grid gap-1.5 sm:grid-cols-2">
+      <ul className="divide-y divide-border/60">
         {items.map((it) => {
-          const abnormal = !!values[it.id];
+          const isYa = !!values[it.id];
           return (
-            <li key={it.id}>
-              <button
-                type="button"
-                onClick={() => onToggle(it.id)}
-                aria-pressed={abnormal}
-                className={`flex min-h-[44px] w-full items-start gap-2 rounded-md border px-3 py-2 text-left text-sm transition-colors ${
-                  abnormal
-                    ? "border-warning/40 bg-warning/10 text-warning"
-                    : "border-border bg-background text-foreground hover:bg-muted/60"
-                }`}
-              >
-                <span
-                  className={`mt-0.5 inline-block h-3 w-3 shrink-0 rounded-full border ${
-                    abnormal ? "border-warning bg-warning" : "border-border bg-background"
-                  }`}
-                  aria-hidden
-                />
-                <span className="flex-1">{abnormal ? it.abnormalLabel : it.normalLabel}</span>
-              </button>
+            <li
+              key={it.id}
+              className="flex items-center gap-3 py-2 first:pt-0 last:pb-0"
+            >
+              <span className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {it.abnormalLabel}
+                {isYa ? null : (
+                  <span className="ml-2 hidden text-[11px] text-muted-foreground sm:inline">
+                    (default: Tidak)
+                  </span>
+                )}
+              </span>
+              <YesNoToggle isYes={isYa} onChange={() => onToggle(it.id)} itemId={it.id} />
             </li>
           );
         })}
       </ul>
     </section>
+  );
+}
+
+function YesNoToggle({
+  isYes,
+  onChange,
+  itemId,
+}: {
+  isYes: boolean;
+  onChange: () => void;
+  itemId: string;
+}) {
+  // Two real buttons so dokter pakai 1-tap, bukan toggle yang bingung.
+  // [Ya] highlight warning, [Tidak] highlight neutral. Default Tidak.
+  return (
+    <div
+      role="radiogroup"
+      aria-label={`Jawaban untuk ${itemId}`}
+      className="inline-flex shrink-0 overflow-hidden rounded-md border border-border bg-background"
+    >
+      <button
+        type="button"
+        role="radio"
+        aria-checked={isYes}
+        onClick={() => {
+          if (!isYes) onChange();
+        }}
+        className={`inline-flex h-9 min-w-[52px] items-center justify-center px-3 text-xs font-semibold transition-colors ${
+          isYes
+            ? "bg-warning text-warning-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+        }`}
+      >
+        Ya
+      </button>
+      <button
+        type="button"
+        role="radio"
+        aria-checked={!isYes}
+        onClick={() => {
+          if (isYes) onChange();
+        }}
+        className={`inline-flex h-9 min-w-[60px] items-center justify-center border-l border-border px-3 text-xs font-semibold transition-colors ${
+          !isYes
+            ? "bg-muted text-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+        }`}
+      >
+        Tidak
+      </button>
+    </div>
   );
 }
 
