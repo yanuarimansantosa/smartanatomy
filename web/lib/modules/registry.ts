@@ -16,7 +16,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   crs: async () => (await import("./specs/crs")).default,
 
   // Module 3 — OMSK aman (H66.1)
-  // "omsk-aman": async () => (await import("./specs/omsk-aman")).default,
+  "omsk-aman": async () => (await import("./specs/omsk-aman")).default,
 
   // Module 4 — OMSK bahaya (H66.2) + komplikasi panel
   // "omsk-bahaya": async () => (await import("./specs/omsk-bahaya")).default,
