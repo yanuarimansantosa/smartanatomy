@@ -188,24 +188,13 @@ export function ModuleRenderer({
         </div>
       </div>
 
-      {/* Emergency banner */}
+      {/* Emergency banner — full width, hard alert stays on top */}
       {emergency ? <EmergencyBanner em={emergency} /> : null}
 
-      {/* CDSS suggestions banner */}
-      {cdss.length > 0 ? (
-        <div className="border-b border-border/60 bg-muted/40 px-4 py-3 md:px-6">
-          <div className="mx-auto flex max-w-6xl flex-col gap-2">
-            {cdss.map((s) => (
-              <SuggestionBanner key={s.ruleId} s={s} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {/* Body — 2-col tablet, single col on small */}
+      {/* Body — left tap inputs, right sticky SOAP + CDSS */}
       <main className="flex-1 overflow-y-auto px-4 py-5 md:px-6">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-2">
-          {/* LEFT col: Diagnosis · Anamnesis · Examination */}
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[1fr_22rem]">
+          {/* LEFT col: all tap inputs the doctor flips through */}
           <div className="space-y-4">
             <SectionCard
               icon={ShieldCheck}
@@ -269,10 +258,7 @@ export function ModuleRenderer({
               values={ctx.examination}
               onToggle={toggleExam}
             />
-          </div>
 
-          {/* RIGHT col: Scoring · Pathway · Treatments · Education · SOAP preview */}
-          <div className="space-y-4">
             {(spec.scoring ?? []).length > 0 ? (
               <SectionCard
                 icon={Calculator}
@@ -391,14 +377,49 @@ export function ModuleRenderer({
                 ))}
               </ul>
             </SectionCard>
-
-            <SectionCard icon={Sparkles} title="Auto SOAP (preview)">
-              <SoapBlock label="S" text={soap.S} />
-              <SoapBlock label="O" text={soap.O} />
-              <SoapBlock label="A" text={soap.A} />
-              <SoapBlock label="P" text={soap.P} />
-            </SectionCard>
           </div>
+
+          {/* RIGHT aside: SOAP + CDSS — sticky so tap-effect kelihatan langsung */}
+          <aside className="space-y-3 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100dvh-9rem)] lg:overflow-y-auto">
+            <section className="rounded-lg border border-primary/30 bg-card p-3 shadow-sm ring-1 ring-primary/10">
+              <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+                Auto-Compose SOAP
+                <span className="ml-auto text-[10px] font-normal uppercase tracking-wider text-muted-foreground">
+                  Live
+                </span>
+              </h2>
+              <div className="grid gap-2 text-sm">
+                <SoapCell label="S — Subjective" body={soap.S} />
+                <SoapCell label="O — Objective" body={soap.O} />
+                <SoapCell label="A — Assessment" body={soap.A} />
+                <SoapCell label="P — Plan" body={soap.P} />
+              </div>
+            </section>
+
+            <section className="rounded-lg border border-border bg-card p-3">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+                CDSS Output
+                <span className="ml-auto text-[10px] font-normal uppercase tracking-wider text-muted-foreground">
+                  {cdss.length} aktif
+                </span>
+              </h2>
+              {cdss.length === 0 ? (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Tap &ldquo;Ya&rdquo; pada temuan di kiri untuk melihat CDSS menyala.
+                </p>
+              ) : (
+                <ul className="mt-2 space-y-2">
+                  {cdss.map((s) => (
+                    <li key={s.ruleId}>
+                      <SuggestionBanner s={s} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </aside>
         </div>
       </main>
 
@@ -483,43 +504,86 @@ function TapSectionCard({
   values: Record<string, boolean>;
   onToggle: (id: string) => void;
 }) {
+  const positiveCount = section.items.filter((i) => values[i.id]).length;
   return (
     <SectionCard
       icon={icon}
       title={section.title}
-      hint={section.helper ?? "Default normal · tap = abnormal"}
+      hint={
+        section.helper ??
+        `Default Tidak · ${positiveCount}/${section.items.length} positif`
+      }
     >
-      <ul className="space-y-1">
+      <ul className="divide-y divide-border/60">
         {section.items.map((it) => {
-          const abnormal = !!values[it.id];
+          const isYa = !!values[it.id];
           return (
-            <li key={it.id}>
-              <button
-                onClick={() => onToggle(it.id)}
-                className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left text-sm transition ${
-                  abnormal
-                    ? "border-destructive/60 bg-destructive/5"
-                    : "border-border hover:bg-muted"
-                }`}
-              >
-                <span className="leading-tight">
-                  {abnormal ? it.abnormalLabel : it.normalLabel}
-                </span>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                    abnormal
-                      ? "bg-destructive/15 text-destructive"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {abnormal ? "Abnormal" : "Normal"}
-                </span>
-              </button>
+            <li
+              key={it.id}
+              className="flex items-center gap-3 py-2 first:pt-0 last:pb-0"
+            >
+              <span className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+                {it.abnormalLabel}
+              </span>
+              <YesNoToggle
+                isYes={isYa}
+                onChange={() => onToggle(it.id)}
+                itemId={it.id}
+              />
             </li>
           );
         })}
       </ul>
     </SectionCard>
+  );
+}
+
+function YesNoToggle({
+  isYes,
+  onChange,
+  itemId,
+}: {
+  isYes: boolean;
+  onChange: () => void;
+  itemId: string;
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={`Jawaban untuk ${itemId}`}
+      className="inline-flex shrink-0 overflow-hidden rounded-md border border-border bg-background"
+    >
+      <button
+        type="button"
+        role="radio"
+        aria-checked={isYes}
+        onClick={() => {
+          if (!isYes) onChange();
+        }}
+        className={`inline-flex h-11 min-w-[56px] items-center justify-center px-3 text-sm font-semibold transition-colors ${
+          isYes
+            ? "bg-warning text-warning-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+        }`}
+      >
+        Ya
+      </button>
+      <button
+        type="button"
+        role="radio"
+        aria-checked={!isYes}
+        onClick={() => {
+          if (isYes) onChange();
+        }}
+        className={`inline-flex h-11 min-w-[64px] items-center justify-center border-l border-border px-3 text-sm font-semibold transition-colors ${
+          !isYes
+            ? "bg-muted text-foreground"
+            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+        }`}
+      >
+        Tidak
+      </button>
+    </div>
   );
 }
 
@@ -676,13 +740,15 @@ function ScoringCard({
   );
 }
 
-function SoapBlock({ label, text }: { label: string; text: string }) {
+function SoapCell({ label, body }: { label: string; body: string }) {
   return (
-    <div className="mb-2 last:mb-0">
-      <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded bg-muted text-[11px] font-mono font-semibold">
+    <div className="rounded-md border border-border/60 bg-background p-3">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
         {label}
-      </span>
-      <span className="text-sm text-muted-foreground">{text || "—"}</span>
+      </div>
+      <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+        {body || <span className="italic text-muted-foreground">(kosong)</span>}
+      </p>
     </div>
   );
 }
