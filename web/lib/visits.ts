@@ -76,6 +76,22 @@ export async function listVisitsByPatient(patientId: string) {
     .limit(100);
 }
 
+// Riwayat seluruh kunjungan tenant — newest first. Untuk halaman /sesi.
+export async function listVisitsByTenant(tenantId: string, limit = 80) {
+  const rows = await db
+    .select({
+      v: visits,
+      patientName: patients.nama,
+      patientNoRm: patients.noRm,
+    })
+    .from(visits)
+    .leftJoin(patients, eq(patients.id, visits.patientId))
+    .where(eq(visits.tenantId, tenantId))
+    .orderBy(desc(visits.visitDate), desc(visits.createdAt))
+    .limit(limit);
+  return rows;
+}
+
 // Top-of-day queue across all locations of a tenant.
 export async function listTodayVisits(tenantId: string) {
   const today = new Date().toISOString().slice(0, 10);

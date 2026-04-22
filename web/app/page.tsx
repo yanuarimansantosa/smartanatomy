@@ -117,14 +117,12 @@ export default function Home() {
                 title="Daftar Hari Ini"
                 subtitle="Antrian & jadwal"
                 href="/jadwal"
-                muted
               />
               <CompactAction
                 Icon={ClipboardList}
                 title="Riwayat Sesi"
                 subtitle="Konsultasi & draft"
                 href="/sesi"
-                muted
               />
             </div>
           </section>
