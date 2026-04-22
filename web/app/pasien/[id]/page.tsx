@@ -1,11 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Calendar, Mail, MapPin, Phone, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Mail,
+  MapPin,
+  Phone,
+  Pill,
+  Stethoscope,
+  User,
+} from "lucide-react";
 import { fmtTanggal, getPatientById, umurDariTglLahir } from "@/lib/patients";
 import {
   fmtTanggalKunjungan,
   fmtJam,
-  listVisitsByPatient,
+  listVisitsByPatientWithContext,
   statusLabel,
 } from "@/lib/visits";
 import { NetworkStatus } from "@/components/network-status";
@@ -45,7 +54,7 @@ export default async function PasienDetailPage({
   if (!p) notFound();
 
   const isL = p.jk === "L";
-  const visits = await listVisitsByPatient(id);
+  const visits = await listVisitsByPatientWithContext(id);
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
@@ -183,7 +192,7 @@ export default async function PasienDetailPage({
                 </p>
               ) : (
                 <ul className="divide-y divide-border/60">
-                  {visits.map((v) => {
+                  {visits.map(({ visit: v, primaryDx, rxCount }) => {
                     const st = statusLabel(v.status);
                     const tone =
                       st.tone === "amber"
@@ -199,33 +208,64 @@ export default async function PasienDetailPage({
                     const href = isSigned
                       ? `/pasien/${id}/kunjungan/${v.id}`
                       : `/pasien/${id}/kunjungan/${v.id}/edit`;
+                    const dxLabel = primaryDx
+                      ? primaryDx.icd10NameId ??
+                        primaryDx.icd10NameEn ??
+                        primaryDx.icd10Code
+                      : null;
                     return (
                       <li key={v.id}>
                         <Link
                           href={href}
-                          className="-mx-2 flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-lg px-2 py-3 transition-colors hover:bg-muted/60"
+                          className="-mx-2 block rounded-lg px-2 py-3 transition-colors hover:bg-muted/60"
                         >
-                          <span className="font-mono text-xs tabular-nums text-foreground/80">
-                            {v.visitNumber}
-                          </span>
-                          <span className="text-sm">
-                            {fmtTanggalKunjungan(v.visitDate)}
-                          </span>
-                          <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                            {fmtJam(v.visitTime)}
-                          </span>
-                          {v.chiefComplaint ? (
-                            <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                              · {v.chiefComplaint}
+                          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                            <span className="font-mono text-xs tabular-nums text-foreground/80">
+                              {v.visitNumber}
                             </span>
-                          ) : (
-                            <span className="min-w-0 flex-1" />
-                          )}
-                          <span
-                            className={`rounded-md px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${tone}`}
-                          >
-                            {st.label}
-                          </span>
+                            <span className="text-sm">
+                              {fmtTanggalKunjungan(v.visitDate)}
+                            </span>
+                            <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                              {fmtJam(v.visitTime)}
+                            </span>
+                            {v.chiefComplaint ? (
+                              <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+                                · {v.chiefComplaint}
+                              </span>
+                            ) : (
+                              <span className="min-w-0 flex-1" />
+                            )}
+                            <span
+                              className={`rounded-md px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${tone}`}
+                            >
+                              {st.label}
+                            </span>
+                          </div>
+                          {dxLabel || rxCount > 0 ? (
+                            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 pl-0">
+                              {dxLabel ? (
+                                <span className="inline-flex max-w-full items-center gap-1.5 truncate rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                                  <Stethoscope
+                                    aria-hidden
+                                    className="h-3 w-3 shrink-0"
+                                  />
+                                  <span className="truncate">{dxLabel}</span>
+                                  <span className="font-mono tabular-nums text-primary/70">
+                                    · {primaryDx?.icd10Code}
+                                  </span>
+                                </span>
+                              ) : null}
+                              {rxCount > 0 ? (
+                                <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-medium text-accent">
+                                  <Pill aria-hidden className="h-3 w-3" />
+                                  <span className="tabular-nums">
+                                    {rxCount} resep
+                                  </span>
+                                </span>
+                              ) : null}
+                            </div>
+                          ) : null}
                         </Link>
                       </li>
                     );

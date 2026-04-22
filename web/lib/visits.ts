@@ -13,7 +13,7 @@ import {
   type VisitProcedure,
   type Prescription,
 } from "@/db/schema";
-import { and, desc, eq, like } from "drizzle-orm";
+import { and, desc, eq, inArray, like, sql } from "drizzle-orm";
 
 export type VisitRow = Visit;
 export type SoapNoteRow = SoapNote;
@@ -74,6 +74,46 @@ export async function listVisitsByPatient(patientId: string) {
     .where(eq(visits.patientId, patientId))
     .orderBy(desc(visits.visitDate), desc(visits.createdAt))
     .limit(100);
+}
+
+export type VisitWithContext = {
+  visit: VisitRow;
+  primaryDx: VisitDiagnosisRow | null;
+  rxCount: number;
+};
+
+export async function listVisitsByPatientWithContext(
+  patientId: string,
+): Promise<VisitWithContext[]> {
+  const vs = await listVisitsByPatient(patientId);
+  if (vs.length === 0) return [];
+  const visitIds = vs.map((v) => v.id);
+  const [dxs, rxCounts] = await Promise.all([
+    db
+      .select()
+      .from(visitDiagnoses)
+      .where(
+        and(
+          inArray(visitDiagnoses.visitId, visitIds),
+          eq(visitDiagnoses.diagnosisType, "primary"),
+        ),
+      ),
+    db
+      .select({
+        visitId: prescriptions.visitId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(prescriptions)
+      .where(inArray(prescriptions.visitId, visitIds))
+      .groupBy(prescriptions.visitId),
+  ]);
+  const dxMap = new Map(dxs.map((d) => [d.visitId, d]));
+  const rxMap = new Map(rxCounts.map((r) => [r.visitId, r.count]));
+  return vs.map((v) => ({
+    visit: v,
+    primaryDx: dxMap.get(v.id) ?? null,
+    rxCount: rxMap.get(v.id) ?? 0,
+  }));
 }
 
 // Riwayat seluruh kunjungan tenant — newest first. Untuk halaman /sesi.
