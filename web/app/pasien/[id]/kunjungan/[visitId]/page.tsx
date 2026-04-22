@@ -148,14 +148,24 @@ export default async function VisitViewerPage({
                   </span>
                 </span>
               </p>
-              <Link
-                href={`/pasien/${p.id}/kunjungan/${v.id}/cetak`}
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/40 bg-background px-3 text-xs font-medium text-success transition-colors hover:bg-success/10"
-                title="Cetak resep"
-              >
-                <Printer className="h-3.5 w-3.5" />
-                Cetak resep
-              </Link>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href={`/pasien/${p.id}/kunjungan/${v.id}/cetak`}
+                  className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/40 bg-background px-3 text-xs font-medium text-success transition-colors hover:bg-success/10"
+                  title="Cetak resep"
+                >
+                  <Printer className="h-3.5 w-3.5" />
+                  Cetak resep
+                </Link>
+                <Link
+                  href={`/pasien/${p.id}/kunjungan/${v.id}/surat-sakit`}
+                  className="inline-flex h-9 items-center gap-2 rounded-lg border border-success/40 bg-background px-3 text-xs font-medium text-success transition-colors hover:bg-success/10"
+                  title="Surat keterangan sakit"
+                >
+                  <Printer className="h-3.5 w-3.5" />
+                  Surat sakit
+                </Link>
+              </div>
             </div>
           ) : null}
 
