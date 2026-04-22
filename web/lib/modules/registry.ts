@@ -31,7 +31,7 @@ const MODULES: Record<string, () => Promise<ModuleSpec>> = {
   "rinitis-alergi": async () => (await import("./specs/rinitis-alergi")).default,
 
   // Module 8 — Trauma Wajah & Maksilofasial (S02.x) — RED FLAG + imaging
-  // "trauma-wajah": async () => (await import("./specs/trauma-wajah")).default,
+  "trauma-wajah": async () => (await import("./specs/trauma-wajah")).default,
 };
 
 export type ModuleListing = {
