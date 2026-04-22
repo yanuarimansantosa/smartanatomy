@@ -300,7 +300,7 @@ export function UniversalSearch() {
 
       {open ? (
         <div
-          className="fixed inset-0 z-[200] flex items-start justify-center bg-foreground/40 px-3 pt-[10vh] backdrop-blur-sm md:pt-[14vh]"
+          className="fixed inset-0 z-[200] flex items-start justify-center bg-foreground/40 px-3 pt-[8vh] backdrop-blur-sm md:pt-[10vh]"
           onClick={() => setOpen(false)}
           role="presentation"
         >
@@ -308,7 +308,7 @@ export function UniversalSearch() {
             role="dialog"
             aria-modal="true"
             aria-label="Pencarian universal"
-            className="flex max-h-[70vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
+            className="flex max-h-[60vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Input row */}
