@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AssessmentQuiz from '../components/AssessmentQuiz';
+---
+
+<Layout title="GHTA Assessment Quiz - Tentukan Framework Health Tourism Anda">
+  <main>
+    <AssessmentQuiz client:load />
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+</style>
